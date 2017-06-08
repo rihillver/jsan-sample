@@ -1,3 +1,3 @@
 # jsan-sample
 
-a practice tests
+A practice tests
