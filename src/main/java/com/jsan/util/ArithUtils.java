@@ -6,7 +6,7 @@ import java.math.RoundingMode;
 /**
  * 简易算术工具类。
  * <p>
- * 专业的数学计算请参：Apache Commons Math。
+ * 专业的数学计算可参：Apache Commons Math。
  *
  */
 

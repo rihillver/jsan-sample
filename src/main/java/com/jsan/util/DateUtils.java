@@ -8,8 +8,18 @@ import java.util.GregorianCalendar;
 import java.util.Locale;
 
 /**
- * 日期工具类。
- *
+ * 简易的日期工具类。
+ * 
+ * <p>
+ * 对于ISO8601日期时间格式的处理，Log4j已有现成实现：
+ * 
+ * <pre>
+ * DateFormat format = ISO8601DateFormat.getDateInstance();
+ * 
+ * <pre>
+ * <p>
+ * 专业的日期时间处理可参：Joda-Time。
+ * 
  */
 
 public class DateUtils {
@@ -26,7 +36,8 @@ public class DateUtils {
 
 	private static final String DATE_FORMAT = "EEE MMM dd HH:mm:ss Z yyyy";
 
-	private static final String[] DATE_FORMATS = { "y-M-d H:m:s.S", "y-M-d H:m:s", "y-M-d H:m", "y-M-d", "y-M", "y/M/d H:m:s.S", "y/M/d H:m:s", "y/M/d H:m", "y/M/d", "y/M", }; // 此处顺序不可更改，否则会因优先匹配而导致丢失精度
+	private static final String[] DATE_FORMATS = { "y-M-d H:m:s.S", "y-M-d H:m:s", "y-M-d H:m", "y-M-d", "y-M",
+			"y/M/d H:m:s.S", "y/M/d H:m:s", "y/M/d H:m", "y/M/d", "y/M", }; // 此处顺序不可更改，否则会因优先匹配而导致丢失精度
 
 	/**
 	 * 返回 SimpleDateFormat 对象。
@@ -37,17 +48,6 @@ public class DateUtils {
 	public static SimpleDateFormat getSimpleDateFormat(String dateFormat) {
 
 		return new SimpleDateFormat(dateFormat);
-	}
-
-	/**
-	 * 返回 SimpleDateFormat 对象（指定 Local）。
-	 * 
-	 * @param dateFormat
-	 * @return
-	 */
-	public static SimpleDateFormat getSimpleDateFormat(String dateFormat, Locale locale) {
-
-		return new SimpleDateFormat(dateFormat, locale);
 	}
 
 	/**
@@ -78,6 +78,7 @@ public class DateUtils {
 	 * 
 	 * @param str
 	 * @return
+	 * @throws ParseException
 	 */
 	public static Date parseDate(String str) {
 
@@ -87,18 +88,17 @@ public class DateUtils {
 			try {
 				date = getSimpleDateFormat(format).parse(str);
 				break;
-			} catch (Exception e) {
-				// logging...
-				// e.printStackTrace();
+			} catch (ParseException e) {
+				// skip...
 			}
 		}
 
+		// 尝试匹配 "EEE MMM dd HH:mm:ss Z yyyy"
 		if (date == null) {
 			try {
-				date = getSimpleDateFormat(DATE_FORMAT, Locale.US).parse(str);
-			} catch (Exception e) {
-				// logging...
-				// e.printStackTrace();
+				date = new SimpleDateFormat(DATE_FORMAT, Locale.US).parse(str);
+			} catch (ParseException e) {
+				// skip...
 			}
 		}
 
@@ -111,19 +111,17 @@ public class DateUtils {
 	 * @param str
 	 * @param dateFormat
 	 * @return
+	 * @throws ParseException
 	 */
 	public static Date parseDate(String str, String dateFormat) {
 
-		Date date = null;
-
 		try {
-			date = getSimpleDateFormat(dateFormat).parse(str);
+			return getSimpleDateFormat(dateFormat).parse(str);
 		} catch (ParseException e) {
-			// logging...
-			e.printStackTrace();
+			// skip...
 		}
 
-		return date;
+		return null;
 	}
 
 	/**
@@ -1423,143 +1421,5 @@ public class DateUtils {
 		}
 		return age;
 	}
-
-	// public static void main(String[] args) {
-	//
-	// Date date = DateUtil.parseDate("2014-06-11 15:23:59");
-	// Date date1 = DateUtil.parseDate("2015-06-28 15:23:59");
-	// Date date2 = DateUtil.parseDate("1983-08-2 16:23:58");
-	//
-	// println("字符串（默认）转Date对象", DateUtil.parseDate("2015-2-25 11:25"));
-	// println("字符串（指定格式）转Date对象", DateUtil.parseDate("2015*2*25 11时25分33秒", "yyyy*MM*dd HH时mm分ss秒"));
-	// println(null, null);
-	// println("年转Date对象", DateUtil.parseDate(2013));
-	// println("年、月转Date对象", DateUtil.parseDate(2013, 11));
-	// println("年、月、日转Date对象", DateUtil.parseDate(2013, 11, 22));
-	// println("年、月、日、时、分、秒转Date对象", DateUtil.parseDate(2013, 11, 22, 5, 6, 7));
-	// println(null, null);
-	// println("今天的Date对象的毫秒数", DateUtil.getTime());
-	// println("今天的Date对象", DateUtil.getDate());
-	// println("昨天的Date对象", DateUtil.getYesterday());
-	// println("明天的Date对象", DateUtil.getTomorrow());
-	// println(null, null);
-	// println("今天日期的字符串（默认）", DateUtil.getDateStr());
-	// println("date日期的字符串（默认）", DateUtil.getDateStr(date));
-	// println("今天日期的字符串（指定格式）", DateUtil.getDateStr("yy年MM月dd日 HH时mm分ss秒"));
-	// println("date日期的字符串（指定格式）", DateUtil.getDateStr(date, "yy年MM月dd日 HH时mm分ss秒"));
-	// println("今天日期和时间的字符串（默认）", DateUtil.getDateTimeStr());
-	// println("date日期和时间的字符串（默认）", DateUtil.getDateTimeStr(date));
-	// println(null, null);
-	// println("今天的最小时间值", DateUtil.getDateMin());
-	// println("date的最小时间值", DateUtil.getDateMin(date));
-	// println("今天的最大时间值", DateUtil.getDateMax());
-	// println("date的最大时间值", DateUtil.getDateMax(date));
-	// println(null, null);
-	// println("date是否在当前时间之前", DateUtil.isBefore(date));
-	// println("date是否在date1之前", DateUtil.isBefore(date1, date));
-	// println("date是否在当前时间之后", DateUtil.isAfter(date));
-	// println("date是否在date1之后", DateUtil.isAfter(date1, date));
-	// println("date是否等于当前时间", DateUtil.isEqual(date));
-	// println("date是否等于date1", DateUtil.isEqual(date1, date));
-	// println("当前时间是否在date1和date2之间", DateUtil.isBetween(date1, date2));
-	// println("date是否是否在date1和date2之间", DateUtil.isBetween(date1, date2, date));
-	// println(null, null);
-	// println("此时偏移100毫秒", DateUtil.getOffsetMillisecond(100));
-	// println("date偏移-59毫秒", DateUtil.getOffsetMillisecond(date, -59));
-	// println("此时偏移100秒", DateUtil.getOffsetSeconds(100));
-	// println("date偏移-59秒", DateUtil.getOffsetSeconds(date, -59));
-	// println("此时偏移-83分钟", DateUtil.getOffsetMinutes(-83));
-	// println("date偏移40分钟", DateUtil.getOffsetMinutes(date, 40));
-	// println("此时偏移-30小时", DateUtil.getOffsetHours(-30));
-	// println("date偏移3小时", DateUtil.getOffsetHours(date, 3));
-	// println("本日偏移365天", DateUtil.getOffsetDays(365));
-	// println("date偏移-11天", DateUtil.getOffsetDays(date, -11));
-	// println("本月偏移-24个月", DateUtil.getOffsetMonths(-24));
-	// println("date偏移3个月", DateUtil.getOffsetMonths(date, 3));
-	// println("今年偏移-20年", DateUtil.getOffsetYears(-20));
-	// println("date偏移5年", DateUtil.getOffsetYears(date, 5));
-	// println(null, null);
-	// println("当前所在周的第一天", DateUtil.getFirstDateOfWeek());
-	// println("date所在周的第一天", DateUtil.getFirstDateOfWeek(date));
-	// println("当前所在周的最后一天", DateUtil.getLastDateOfWeek());
-	// println("date所在周的最后一天", DateUtil.getLastDateOfWeek(date));
-	// println("当前所在月的第一天", DateUtil.getFirstDateOfMonth());
-	// println("date所在月的第一天", DateUtil.getFirstDateOfMonth(date));
-	// println("当前所在月的最后一天", DateUtil.getLastDateOfMonth());
-	// println("date所在月的最后一天", DateUtil.getLastDateOfMonth(date));
-	// println("当前所在年的第一天", DateUtil.getFirstDateOfYear());
-	// println("date所在年的第一天", DateUtil.getFirstDateOfYear(date));
-	// println("当前所在年的最后一天", DateUtil.getLastDateOfYear());
-	// println("date所在年的最后一天", DateUtil.getLastDateOfYear(date));
-	// println(null, null);
-	// println("date与当前时间的间隔数（毫秒）", DateUtil.getIntervalMilliseconds(date));
-	// println("date1与date2的间隔数（毫秒）", DateUtil.getIntervalMilliseconds(date1, date2));
-	// println("date与当前时间的间隔数（秒）", DateUtil.getIntervalSeconds(date));
-	// println("date1与date2的间隔数（秒）", DateUtil.getIntervalSeconds(date1, date2));
-	// println("date与当前时间的间隔数（分钟）", DateUtil.getIntervalMinutes(date));
-	// println("date1与date2的间隔数（分钟）", DateUtil.getIntervalMinutes(date1, date2));
-	// println("date与当前时间的间隔数（小时）", DateUtil.getIntervalHours(date));
-	// println("date1与date2的间隔数（小时）", DateUtil.getIntervalHours(date1, date2));
-	// println("date与当前时间的间隔数（天）", DateUtil.getIntervalDays(date));
-	// println("date1与date2的间隔数（天）", DateUtil.getIntervalDays(date1, date2));
-	// println("date与当前时间的间隔数（周）", DateUtil.getIntervalWeeks(date));
-	// println("date1与date2的间隔数（周）", DateUtil.getIntervalWeeks(date1, date2));
-	// println("date与当前时间的间隔数（月）", DateUtil.getIntervalMonths(date));
-	// println("date1与date2的间隔数（月）", DateUtil.getIntervalMonths(date1, date2));
-	// println("date与当前时间的间隔数（年）", DateUtil.getIntervalYears(date));
-	// println("date1与date2的间隔数（年）", DateUtil.getIntervalYears(date1, date2));
-	// println(null, null);
-	// println("本周的周日", DateUtil.getDateOfWeek(1));
-	// println("date所在周的周三", DateUtil.getDateOfWeek(date, 4));
-	// println("本月的1号", DateUtil.getDateOfMonth(1));
-	// println("date所在月的30号", DateUtil.getDateOfMonth(date, 30));
-	// println("本年的第1天", DateUtil.getDateOfYear(1));
-	// println("date所在年的365天", DateUtil.getDateOfYear(date, 365));
-	// println("本月的天数", DateUtil.getDaysOfMonth());
-	// println("date所在月的天数", DateUtil.getDaysOfMonth(date));
-	// println("本年的天数", DateUtil.getDaysOfYear());
-	// println("date所在年的天数", DateUtil.getDaysOfYear(date));
-	// println("本月的周数", DateUtil.getWeeksOfMonth());
-	// println("date所在月的周数", DateUtil.getWeeksOfMonth(date));
-	// println("本年的周数", DateUtil.getWeeksOfYear());
-	// println("date所在年的周数", DateUtil.getWeeksOfYear(date));
-	// println(null, null);
-	// println("今天是周的几（中文）", DateUtil.getWeekChinese());
-	// println("date是周的几（中文）", DateUtil.getWeekChinese(date));
-	// println("今天是星期几（中文）", DateUtil.getWeekChineseFull());
-	// println("date是星期几（中文）", DateUtil.getWeekChineseFull(date));
-	// println("今天是星期几（中文简）", DateUtil.getWeekChineseShort());
-	// println("date是星期几（中文简）", DateUtil.getWeekChineseShort(date));
-	// println(null, null);
-	// println("今天是几号", DateUtil.getDay());
-	// println("date是几号", DateUtil.getDay(date));
-	// println("今天是周几", DateUtil.getWeek());
-	// println("date是周几", DateUtil.getWeek(date));
-	// println("今天是几月份", DateUtil.getMonth());
-	// println("date是几月份", DateUtil.getMonth(date));
-	// println("今天是什么年份", DateUtil.getYear());
-	// println("date是什么年份", DateUtil.getYear(date));
-	// println("今年是否闰年", DateUtil.isLeapYear());
-	// println("date是否闰年", DateUtil.isLeapYear(date));
-	// println("0004年是否闰年", DateUtil.isLeapYear("0004"));
-	// println("1900年是否闰年", DateUtil.isLeapYear(1900));
-	// println("计算得出年龄", DateUtil.getAge(DateUtil.parseDate("1983-7-5")));
-	// println("计算得出年龄(精确)", DateUtil.getExactAge(DateUtil.parseDate("1983-7-2 11:34:59")));
-	//
-	// }
-	//
-	// public static void println(String str, Object obj) {
-	//
-	// if (obj instanceof Date) {
-	// System.out.println(str + " : " + DateUtil.getDateTimeStr((Date) obj));
-	// } else {
-	// if (str == null) {
-	// System.out.println();
-	// } else {
-	// System.out.println(str + " : " + obj);
-	// }
-	// }
-	//
-	// }
 
 }

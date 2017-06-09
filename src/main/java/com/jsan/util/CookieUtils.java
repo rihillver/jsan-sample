@@ -21,7 +21,7 @@ import javax.servlet.http.HttpServletResponse;
 
 public class CookieUtils {
 
-	public static final String ENCODING = "utf-8";
+	public static final String CHARACTER_ENCODING = "utf-8";
 
 	/**
 	 * 添加 Cookie（path 为根路径 "/"）。
@@ -76,9 +76,9 @@ public class CookieUtils {
 			String domain) {
 
 		try {
-			name = URLEncoder.encode(name, ENCODING);
+			name = URLEncoder.encode(name, CHARACTER_ENCODING);
 			if (value != null) {
-				value = URLEncoder.encode(value, ENCODING);
+				value = URLEncoder.encode(value, CHARACTER_ENCODING);
 			}
 		} catch (UnsupportedEncodingException e) {
 			throw new RuntimeException(e);
@@ -151,7 +151,7 @@ public class CookieUtils {
 
 		if (cookies != null && name != null) {
 			try {
-				name = URLEncoder.encode(name, ENCODING);
+				name = URLEncoder.encode(name, CHARACTER_ENCODING);
 			} catch (Exception e) {
 				throw new RuntimeException(e);
 			}
@@ -179,7 +179,7 @@ public class CookieUtils {
 
 		if (cookie != null) {
 			try {
-				return URLDecoder.decode(cookie.getValue(), ENCODING);
+				return URLDecoder.decode(cookie.getValue(), CHARACTER_ENCODING);
 			} catch (UnsupportedEncodingException e) {
 				throw new RuntimeException(e);
 			}
@@ -202,8 +202,8 @@ public class CookieUtils {
 			Map<String, String> cookieMap = new HashMap<String, String>();
 			for (Cookie cookie : cookies) {
 				try {
-					cookieMap.put(URLDecoder.decode(cookie.getName(), ENCODING),
-							URLDecoder.decode(cookie.getValue(), ENCODING));
+					cookieMap.put(URLDecoder.decode(cookie.getName(), CHARACTER_ENCODING),
+							URLDecoder.decode(cookie.getValue(), CHARACTER_ENCODING));
 				} catch (UnsupportedEncodingException e) {
 					throw new RuntimeException(e);
 				}
