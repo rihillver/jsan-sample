@@ -11,16 +11,17 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Cookie 操作工具类。<br>
- * <br>
- * 
- * 注：<br>
- * 1、不指定 maxAge 的时候默认为 -1 ，即浏览器关闭后 Cookie 随即失效。<br>
- * 2、path 为 null 的时候 Cookie 的路径默认在其请求的路径下。
+ * Cookie 操作工具类。
+ * <ul>
+ * <li>不指定 maxAge 的时候默认为 -1 ，即浏览器关闭后 Cookie 随即失效。</li>
+ * <li>path 为 null 的时候 Cookie 的路径默认在其请求的路径下。</li>
+ * </ul>
  *
  */
 
 public class CookieUtils {
+
+	public static final String ENCODING = "utf-8";
 
 	/**
 	 * 添加 Cookie（path 为根路径 "/"）。
@@ -71,24 +72,16 @@ public class CookieUtils {
 	 * @param path
 	 * @param domain
 	 */
-	public static void addCookie(HttpServletResponse response, String name, String value, Integer maxAge, String path, String domain) {
+	public static void addCookie(HttpServletResponse response, String name, String value, Integer maxAge, String path,
+			String domain) {
 
-		if (name != null) {
-			try {
-				name = URLEncoder.encode(name, "utf-8");
-			} catch (UnsupportedEncodingException e) {
-				// logging...
-				e.printStackTrace();
+		try {
+			name = URLEncoder.encode(name, ENCODING);
+			if (value != null) {
+				value = URLEncoder.encode(value, ENCODING);
 			}
-		}
-
-		if (value != null) {
-			try {
-				value = URLEncoder.encode(value, "utf-8");
-			} catch (UnsupportedEncodingException e) {
-				// logging...
-				e.printStackTrace();
-			}
+		} catch (UnsupportedEncodingException e) {
+			throw new RuntimeException(e);
 		}
 
 		Cookie cookie = new Cookie(name, value);
@@ -154,25 +147,23 @@ public class CookieUtils {
 	 */
 	public static Cookie getCookie(HttpServletRequest request, String name) {
 
-		Cookie cookie = null;
 		Cookie[] cookies = request.getCookies();
 
 		if (cookies != null && name != null) {
 			try {
-				name = URLEncoder.encode(name, "utf-8");
+				name = URLEncoder.encode(name, ENCODING);
 			} catch (Exception e) {
-				// logging...
-				e.printStackTrace();
+				throw new RuntimeException(e);
 			}
 
 			for (Cookie itemCookie : cookies) {
 				if (name.equals(itemCookie.getName())) {
-					cookie = itemCookie;
+					return itemCookie;
 				}
 			}
 		}
 
-		return cookie;
+		return null;
 	}
 
 	/**
@@ -184,20 +175,17 @@ public class CookieUtils {
 	 */
 	public static String getCookieValue(HttpServletRequest request, String name) {
 
-		String value = null;
 		Cookie cookie = getCookie(request, name);
 
 		if (cookie != null) {
-			value = cookie.getValue();
 			try {
-				value = URLDecoder.decode(value, "utf-8");
+				return URLDecoder.decode(cookie.getValue(), ENCODING);
 			} catch (UnsupportedEncodingException e) {
-				// logging...
-				e.printStackTrace();
+				throw new RuntimeException(e);
 			}
 		}
 
-		return value;
+		return null;
 	}
 
 	/**
@@ -208,22 +196,22 @@ public class CookieUtils {
 	 */
 	public static Map<String, String> getCookieMap(HttpServletRequest request) {
 
-		Map<String, String> cookieMap = null;
 		Cookie[] cookies = request.getCookies();
 
 		if (cookies != null) {
-			cookieMap = new HashMap<String, String>();
+			Map<String, String> cookieMap = new HashMap<String, String>();
 			for (Cookie cookie : cookies) {
 				try {
-					cookieMap.put(URLDecoder.decode(cookie.getName(), "utf-8"), URLDecoder.decode(cookie.getValue(), "utf-8"));
+					cookieMap.put(URLDecoder.decode(cookie.getName(), ENCODING),
+							URLDecoder.decode(cookie.getValue(), ENCODING));
 				} catch (UnsupportedEncodingException e) {
-					// logging...
-					e.printStackTrace();
+					throw new RuntimeException(e);
 				}
 			}
+			return cookieMap;
 		}
 
-		return cookieMap;
+		return null;
 	}
 
 }

@@ -4,10 +4,9 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 /**
- * 简易算术工具类。<br>
- * <br>
- * 
- * 专业的数学计算参见：Apache Commons Math
+ * 简易算术工具类。
+ * <p>
+ * 专业的数学计算请参：Apache Commons Math。
  *
  */
 
@@ -228,15 +227,5 @@ public class ArithUtils {
 
 		return b.setScale(scale, round).doubleValue();
 	}
-
-//	public static void main(String[] args) {
-//
-//		double a = 123.1454;
-//		double b = 2.36;
-//
-//		System.out.println(a * b);
-//		System.out.println(multiply(a, b));
-//		System.out.println(divide(10.0, 3.0));
-//	}
 
 }
