@@ -12,6 +12,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
+/**
+ * 简易的文件处理工具类。
+ *
+ */
+
 public class FileUtils {
 
 	/**
@@ -22,7 +27,6 @@ public class FileUtils {
 	 */
 	public static boolean createFile(File file) {
 
-		boolean b = false;
 		File parentFile = file.getParentFile();
 
 		if (!parentFile.exists()) {
@@ -31,14 +35,13 @@ public class FileUtils {
 
 		if (!file.exists()) {
 			try {
-				b = file.createNewFile();
+				return file.createNewFile();
 			} catch (IOException e) {
-				// logging...
-				e.printStackTrace();
+				throw new RuntimeException(e);
 			}
 		}
 
-		return b;
+		return false;
 	}
 
 	/**
@@ -61,13 +64,11 @@ public class FileUtils {
 	 */
 	public static boolean deleteFile(File file) {
 
-		boolean b = false;
-
 		if (file.exists() && file.isFile()) {
-			b = file.delete();
+			return file.delete();
 		}
 
-		return b;
+		return false;
 	}
 
 	/**
@@ -160,35 +161,33 @@ public class FileUtils {
 				if (!parentFile.exists()) {
 					parentFile.mkdirs();
 				}
-				InputStream inputStream = null;
-				OutputStream outputStream = null;
+
+				InputStream in = null;
+				OutputStream out = null;
 				try {
-					inputStream = new FileInputStream(sourceFile);
-					outputStream = new FileOutputStream(destFile);
+					in = new FileInputStream(sourceFile);
+					out = new FileOutputStream(destFile);
 					byte[] buffer = new byte[1024 * 4];
 					int i;
-					while ((i = inputStream.read(buffer)) != -1) {
-						outputStream.write(buffer, 0, i);
+					while ((i = in.read(buffer)) != -1) {
+						out.write(buffer, 0, i);
 					}
 					return true;
 				} catch (Exception e) {
-					// logging...
 					e.printStackTrace();
 					return false;
 				} finally {
-					if (outputStream != null) {
+					if (out != null) {
 						try {
-							outputStream.close();
+							out.close();
 						} catch (IOException e) {
-							// logging...
 							e.printStackTrace();
 						}
 					}
-					if (inputStream != null) {
+					if (in != null) {
 						try {
-							inputStream.close();
+							in.close();
 						} catch (IOException e) {
-							// logging...
 							e.printStackTrace();
 						}
 					}
@@ -339,7 +338,7 @@ public class FileUtils {
 		return listAll(dirPath, regex, false);
 	}
 
-	/*******************************************************************************/
+	// ==================================================
 
 	/**
 	 * 创建文件夹。
@@ -349,13 +348,11 @@ public class FileUtils {
 	 */
 	public static boolean createFolder(File folder) {
 
-		boolean b = false;
-
 		if (!folder.exists()) {
-			b = folder.mkdirs(); // 包括创建必需但不存在的父目录
+			return folder.mkdirs(); // 包括创建必需但不存在的父目录
+		} else {
+			return true; // 若目录已存在则返回true
 		}
-
-		return b;
 	}
 
 	/**
@@ -647,7 +644,7 @@ public class FileUtils {
 		return listAll(dirPath, regex, true);
 	}
 
-	/*******************************************************************************/
+	// ==================================================
 
 	/**
 	 * （重命名/移动）文件或文件夹，仅在同一个盘符上操作有效，不同盘符或驱动器上移动文件或文件夹请使用 move 方法。
@@ -676,7 +673,8 @@ public class FileUtils {
 				if (destFile.exists()) {
 					File[] files = sourceFile.listFiles();
 					for (File itemSourceFile : files) {
-						File itemDestinationFile = new File(destFile.getPath() + File.separator + itemSourceFile.getName());
+						File itemDestinationFile = new File(
+								destFile.getPath() + File.separator + itemSourceFile.getName());
 						if (!rename(itemSourceFile, itemDestinationFile, overlay) && overlay) {
 							return false;
 						}
@@ -966,34 +964,31 @@ public class FileUtils {
 
 			FileChannel in = null;
 			FileChannel out = null;
-			FileInputStream fileInputStream = null;
-			FileOutputStream fileOutputStream = null;
+			FileInputStream fis = null;
+			FileOutputStream fos = null;
 			try {
-				fileInputStream = new FileInputStream(sourceFile);
-				fileOutputStream = new FileOutputStream(destFile);
-				in = fileInputStream.getChannel();
-				out = fileOutputStream.getChannel();
+				fis = new FileInputStream(sourceFile);
+				fos = new FileOutputStream(destFile);
+				in = fis.getChannel();
+				out = fos.getChannel();
 				in.transferTo(0, in.size(), out);
 				out.transferFrom(in, 0, in.size());
 				return true;
 			} catch (Exception e) {
-				// logging...
 				e.printStackTrace();
 				return false;
 			} finally {
-				if (fileOutputStream != null) {
+				if (fos != null) {
 					try {
-						fileOutputStream.close();
+						fos.close();
 					} catch (IOException e) {
-						// logging...
 						e.printStackTrace();
 					}
 				}
-				if (fileInputStream != null) {
+				if (fis != null) {
 					try {
-						fileInputStream.close();
+						fis.close();
 					} catch (IOException e) {
-						// logging...
 						e.printStackTrace();
 					}
 				}
@@ -1001,7 +996,6 @@ public class FileUtils {
 					try {
 						out.close();
 					} catch (IOException e) {
-						// logging...
 						e.printStackTrace();
 					}
 				}
@@ -1009,7 +1003,6 @@ public class FileUtils {
 					try {
 						in.close();
 					} catch (IOException e) {
-						// logging...
 						e.printStackTrace();
 					}
 				}

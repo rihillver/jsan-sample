@@ -18,7 +18,7 @@ import java.util.Locale;
  * 
  * <pre>
  * <p>
- * 专业的日期时间处理可参：Joda-Time。
+ * 更专业的日期时间处理可参：Joda-Time。
  * 
  */
 

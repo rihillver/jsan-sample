@@ -4,9 +4,9 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 /**
- * 简易算术工具类。
+ * 简易的算术工具类。
  * <p>
- * 专业的数学计算可参：Apache Commons Math。
+ * 更专业的数学计算可参：Apache Commons Math。
  *
  */
 

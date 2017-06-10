@@ -91,7 +91,8 @@ public class IpUtils {
 					netIp = ip.getHostAddress();
 					finded = true;
 					break;
-				} else if (ip.isSiteLocalAddress() && !ip.isLoopbackAddress() && ip.getHostAddress().indexOf(':') == -1) { // 内网IP
+				} else if (ip.isSiteLocalAddress() && !ip.isLoopbackAddress()
+						&& ip.getHostAddress().indexOf(':') == -1) { // 内网IP
 					localIp = ip.getHostAddress();
 				}
 			}

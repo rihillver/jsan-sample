@@ -21,7 +21,7 @@ import javax.servlet.http.HttpServletResponse;
 
 public class CookieUtils {
 
-	public static final String CHARACTER_ENCODING = "utf-8";
+	private static final String CHARACTER_ENCODING = "utf-8";
 
 	/**
 	 * 添加 Cookie（path 为根路径 "/"）。
