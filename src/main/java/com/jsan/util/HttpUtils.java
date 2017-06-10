@@ -1,5 +1,6 @@
 package com.jsan.util;
 
+import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -21,7 +22,9 @@ import java.net.URL;
 
 public class HttpUtils {
 
-	private static final int CONNECT_TIMEOUT = 10000; // 默认连接超时为10秒
+	private static final int CONNECT_TIMEOUT = 10000; // 建立连接的超时时间为10秒
+
+	private static final int READ_TIMEOUT = 30000; // 传递数据的超时时间为30秒
 
 	private static final String USER_AGENT = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/31.0.1650.63 Safari/537.36";
 
@@ -52,6 +55,7 @@ public class HttpUtils {
 		try {
 			conn = (HttpURLConnection) url.openConnection();
 			conn.setConnectTimeout(CONNECT_TIMEOUT);
+			conn.setReadTimeout(READ_TIMEOUT);
 			conn.setRequestProperty("User-Agent", USER_AGENT); // 设置User-Agent，避免部分网站禁止网络爬虫抓取网页内容
 			conn.connect();
 
@@ -66,8 +70,18 @@ public class HttpUtils {
 			}
 
 			if (conn.getResponseCode() == 200) {
+
 				in = conn.getInputStream();
-				str = streamToString(in, charset);
+
+				byte[] result = streamToBytes(in);
+
+				if (result != null) {
+					if (charset != null) {
+						str = new String(result, charset);
+					} else {
+						str = new String(result);
+					}
+				}
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -90,90 +104,63 @@ public class HttpUtils {
 	/**
 	 * 返回 URL 请求的字符串形式（自动分析字符编码）。
 	 * 
-	 * @param urlstr
+	 * @param urlStr
 	 * @return
 	 */
-	public static String getString(String urlstr) {
+	public static String getString(String urlStr) {
 
-		return getString(urlstr, null);
+		return getString(urlStr, null);
 	}
 
 	/**
 	 * 返回 URL 请求的字符串形式（指定字符编码）。
 	 * 
-	 * @param urlstr
+	 * @param urlStr
 	 * @param charset
 	 * @return
 	 */
-	public static String getString(String urlstr, String charset) {
+	public static String getString(String urlStr, String charset) {
 
-		try {
-			return getString(new URL(urlstr), charset);
-		} catch (MalformedURLException e) {
-			throw new RuntimeException(e);
-		}
+		return getString(getURL(urlStr), charset);
 	}
 
 	/**
-	 * 返回 URL 请求的文件形式。
+	 * 返回 URL 请求的字节数组形式。
 	 * 
 	 * @param url
-	 * @param file
 	 * @return
 	 */
-	public static File getFile(URL url, File file) {
+	public static byte[] getBytes(URL url) {
 
-		File parentFile = file.getParentFile();
-		if (!parentFile.exists()) {
-			parentFile.mkdirs();
-		}
-
-		HttpURLConnection conn = null;
-		InputStream in = null;
-		OutputStream out = null;
+		byte[] bytes = null;
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
 
 		try {
-			conn = (HttpURLConnection) url.openConnection();
-			conn.setConnectTimeout(CONNECT_TIMEOUT);
-			conn.setRequestProperty("User-Agent", USER_AGENT); // 设置User-Agent，避免部分网站禁止网络爬虫抓取网页内容
-			conn.connect();
-
-			if (conn.getResponseCode() == 200) {
-
-				in = conn.getInputStream();
-				out = new FileOutputStream(file);
-
-				if (convertStream(in, out)) {
-					return file;
-				} else {
-					return null;
-				}
-			} else {
-				return null;
+			if (toStream(url, out)) {
+				bytes = out.toByteArray();
 			}
-
-		} catch (IOException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
-			return null;
 		} finally {
-			if (out != null) {
-				try {
-					out.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-			if (in != null) {
-				try {
-					in.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-			if (conn != null) {
-				conn.disconnect();
+			try {
+				out.close();
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
 		}
+
+		return bytes;
+	}
+
+	/**
+	 * 返回 URL 请求的字节数组形式。
+	 * 
+	 * @param urlStr
+	 * @return
+	 */
+	public static byte[] getBytes(String urlStr) {
+
+		return getBytes(getURL(urlStr));
 	}
 
 	/**
@@ -186,36 +173,106 @@ public class HttpUtils {
 	public static File getFile(URL url, String filePath) {
 
 		File file = new File(filePath);
-		return getFile(url, file);
-	}
 
-	/**
-	 * 返回 URL 请求的文件形式。
-	 * 
-	 * @param urlstr
-	 * @param file
-	 * @return
-	 */
-	public static File getFile(String urlstr, File file) {
+		File parentFile = file.getParentFile();
+		if (!parentFile.exists()) {
+			parentFile.mkdirs();
+		}
+
+		boolean existFlag = file.exists() ? true : false; // 文件是否已存在
+
+		FileOutputStream fos = null;
+		BufferedOutputStream bos = null;
 
 		try {
-			return getFile(new URL(urlstr), file);
-		} catch (MalformedURLException e) {
-			throw new RuntimeException(e);
+			fos = new FileOutputStream(file);
+			bos = new BufferedOutputStream(fos);
+			if (toStream(url, bos)) {
+				return file;
+			} else {
+				if (!existFlag) {
+					file.delete(); // 异常的情况下如果该文件原先不存在的则删除之
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if (bos != null) {
+				try {
+					bos.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
 		}
+
+		return null;
 	}
 
 	/**
 	 * 返回 URL 请求的文件形式。
 	 * 
-	 * @param urlstr
+	 * @param urlStr
 	 * @param filePath
 	 * @return
 	 */
-	public static File getFile(String urlstr, String filePath) {
+	public static File getFile(String urlStr, String filePath) {
 
-		File file = new File(filePath);
-		return getFile(urlstr, file);
+		return getFile(getURL(urlStr), filePath);
+	}
+
+	/**
+	 * URL 请求转输出流。
+	 * 
+	 * @param url
+	 * @param out
+	 * @return
+	 */
+	public static boolean toStream(URL url, OutputStream out) {
+
+		HttpURLConnection conn = null;
+		InputStream in = null;
+
+		try {
+			conn = (HttpURLConnection) url.openConnection();
+			conn.setConnectTimeout(CONNECT_TIMEOUT);
+			conn.setReadTimeout(READ_TIMEOUT);
+			conn.setRequestProperty("User-Agent", USER_AGENT); // 设置User-Agent，避免部分网站禁止网络爬虫抓取网页内容
+			conn.connect();
+
+			if (conn.getResponseCode() == 200) {
+				in = conn.getInputStream();
+				return convertStream(in, out);
+			}
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			if (in != null) {
+				try {
+					in.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+			if (conn != null) {
+				conn.disconnect();
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * URL 请求转输出流。
+	 * 
+	 * @param urlStr
+	 * @param out
+	 * @return
+	 */
+	public static boolean toStream(String urlStr, OutputStream out) {
+
+		return toStream(getURL(urlStr), out);
 	}
 
 	/**
@@ -244,16 +301,9 @@ public class HttpUtils {
 
 	}
 
-	/**
-	 * 从输入流中获取数据（指定字符编码）。
-	 * 
-	 * @param in
-	 * @param charset
-	 * @return
-	 */
-	private static String streamToString(InputStream in, String charset) {
+	private static byte[] streamToBytes(InputStream in) {
 
-		String str = null;
+		byte[] result = null;
 		ByteArrayOutputStream out = null;
 
 		if (in != null) {
@@ -269,13 +319,8 @@ public class HttpUtils {
 				while ((len = in.read(buffer)) != -1) {
 					out.write(buffer, 0, len);
 				}
-				byte[] result = out.toByteArray();
 
-				if (charset == null) {
-					str = new String(result);
-				} else {
-					str = new String(result, charset);
-				}
+				result = out.toByteArray();
 
 			} catch (Exception e) {
 				throw new RuntimeException(e);
@@ -290,7 +335,16 @@ public class HttpUtils {
 			}
 		}
 
-		return str;
+		return result;
+	}
+
+	private static URL getURL(String urlStr) {
+
+		try {
+			return new URL(urlStr);
+		} catch (MalformedURLException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 }

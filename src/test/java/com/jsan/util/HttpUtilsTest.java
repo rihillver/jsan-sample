@@ -37,4 +37,13 @@ public class HttpUtilsTest extends TestCase {
 		System.out.println(HttpUtils.getFile(imgUrl, "d:/baidu.png"));
 	}
 
+	public void testQuux() {
+
+		String imgUrl = "https://www.baidu.com/img/bd_logo.png";
+		byte[] bs = HttpUtils.getBytes(imgUrl);
+		for (byte b : bs) {
+			System.out.print(b + "-");
+		}
+	}
+
 }

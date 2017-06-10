@@ -1,12 +1,12 @@
 package com.jsan.util;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +14,8 @@ import java.util.regex.Pattern;
 
 /**
  * 简易的文件处理工具类。
+ * <p>
+ * 更专业的可参 Apache Commons IO。
  *
  */
 
@@ -162,11 +164,11 @@ public class FileUtils {
 					parentFile.mkdirs();
 				}
 
-				InputStream in = null;
-				OutputStream out = null;
+				BufferedInputStream in = null;
+				BufferedOutputStream out = null;
 				try {
-					in = new FileInputStream(sourceFile);
-					out = new FileOutputStream(destFile);
+					in = new BufferedInputStream(new FileInputStream(sourceFile));
+					out = new BufferedOutputStream(new FileOutputStream(destFile));
 					byte[] buffer = new byte[1024 * 4];
 					int i;
 					while ((i = in.read(buffer)) != -1) {
