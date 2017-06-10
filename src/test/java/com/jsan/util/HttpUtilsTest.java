@@ -9,14 +9,32 @@ public class HttpUtilsTest extends TestCase {
 
 	public void testFoo() throws UnsupportedEncodingException {
 
-		String url = "http://scm.taixingmart.com/app/query.do?key=" + URLEncoder.encode("可乐", "utf-8");
-		System.out.println(HttpUtils.getString(url));
+		long start = System.nanoTime();
 
-		String imgUrl = "https://www.baidu.com/img/bd_logo1.png";
-		System.out.println(HttpUtils.getFile(imgUrl, "d:/baidu.png"));
-		
-		String httpsUrl = "https://www.baidu.com/";		
-		System.out.println(HttpUtils.getString(httpsUrl));
+		String url = "http://scm.gxtaixing.cn/app/query.do?key=" + URLEncoder.encode("可乐", "utf-8");
+		System.out.println(HttpUtils.getString(url));
+		long end = System.nanoTime() - start;
+
+		System.out.println(end);
 
 	}
+
+	public void testBar() {
+
+		String url = "https://www.baidu.com/";
+		System.out.println(HttpUtils.getFile(url, "d:/baidu.html"));
+	}
+
+	public void testBaz() {
+
+		String httpsUrl = "https://www.baidu.com/";
+		System.out.println(HttpUtils.getString(httpsUrl));
+	}
+
+	public void testQux() {
+
+		String imgUrl = "https://www.baidu.com/img/bd_logo.png";
+		System.out.println(HttpUtils.getFile(imgUrl, "d:/baidu.png"));
+	}
+
 }
