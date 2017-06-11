@@ -1,4 +1,4 @@
-package com.jsan.util.local;
+package com.sample.util.local;
 
 import net.sourceforge.pinyin4j.PinyinHelper;
 import net.sourceforge.pinyin4j.format.HanyuPinyinCaseType;

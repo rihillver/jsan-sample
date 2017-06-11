@@ -1,4 +1,4 @@
-package com.jsan.util.reserve;
+package com.sample.util.reserve;
 
 import java.lang.reflect.Type;
 import java.util.Collection;

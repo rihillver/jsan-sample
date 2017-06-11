@@ -1,4 +1,4 @@
-package com.jsan.util.image;
+package com.sample.util.image;
 
 import java.awt.Color;
 import java.awt.Font;

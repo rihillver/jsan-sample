@@ -1,4 +1,4 @@
-package com.jsan.util.local;
+package com.sample.util.local;
 
 /**
  * 金额大小写转换工具类。

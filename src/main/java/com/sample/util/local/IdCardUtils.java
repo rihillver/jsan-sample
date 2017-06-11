@@ -1,4 +1,4 @@
-package com.jsan.util.local;
+package com.sample.util.local;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
