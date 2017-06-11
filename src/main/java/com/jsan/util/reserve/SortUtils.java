@@ -1,4 +1,4 @@
-package com.jsan.util;
+package com.jsan.util.reserve;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;

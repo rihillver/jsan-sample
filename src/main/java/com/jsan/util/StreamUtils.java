@@ -13,10 +13,9 @@ import java.io.OutputStream;
 //import java.io.UnsupportedEncodingException;
 
 /**
- * 数据流转换工具类。<br>
- * <br>
- * 
- * 注：当进行对象系列化与反序列化时，需要序列化的对象必须实现 Serializable 接口。
+ * 数据流转换工具类。
+ * <p>
+ * 更专业的可参 Apache Commons IO。
  *
  */
 
@@ -553,7 +552,7 @@ public class StreamUtils {
 	}
 
 	/**
-	 * 将对象存储到文件。
+	 * 将对象存储到文件（进行序列化与反序列化时，对象必须实现 Serializable 接口）。
 	 * 
 	 * @param file
 	 * @param obj
@@ -597,7 +596,7 @@ public class StreamUtils {
 	}
 
 	/**
-	 * 将对象存储到文件。
+	 * 将对象存储到文件（进行序列化与反序列化时，对象必须实现 Serializable 接口）。
 	 * 
 	 * @param filePath
 	 * @param obj
@@ -610,7 +609,7 @@ public class StreamUtils {
 	}
 
 	/**
-	 * 读取文件并转化到对象。
+	 * 读取文件并转化到对象（进行序列化与反序列化时，对象必须实现 Serializable 接口）。
 	 * 
 	 * @param file
 	 * @return
@@ -651,7 +650,7 @@ public class StreamUtils {
 	}
 
 	/**
-	 * 读取文件并转化到对象。
+	 * 读取文件并转化到对象（进行序列化与反序列化时，对象必须实现 Serializable 接口）。
 	 * 
 	 * @param filePath
 	 * @return

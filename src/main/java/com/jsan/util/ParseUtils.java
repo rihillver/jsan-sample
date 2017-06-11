@@ -10,62 +10,43 @@ import java.math.BigInteger;
 public class ParseUtils {
 
 	/**
-	 * 将首字母变小写。
+	 * 将首字母转小写。
 	 * 
 	 * @param str
 	 * @return
 	 */
 	public static String parseFirstCharToLowerCase(String str) {
 
-		if (str == null) {
-			return null;
-		}
-
-		char firstChar = str.charAt(0);
-
-		if (firstChar >= 'A' && firstChar <= 'Z') {
-			char[] arr = str.toCharArray();
-			arr[0] += ('a' - 'A');
-			return new String(arr);
+		if (str != null && str.length() > 0) {
+			char firstChar = str.charAt(0);
+			if (firstChar >= 'A' && firstChar <= 'Z') {
+				char[] arr = str.toCharArray();
+				arr[0] += ('a' - 'A');
+				return new String(arr);
+			}
 		}
 
 		return str;
-
-		// if (str != null && str.length() > 0) {
-		// return Character.toLowerCase(str.charAt(0)) + str.substring(1);
-		// } else {
-		// return str;
-		// }
-
 	}
 
 	/**
-	 * 将首字母变大写。
+	 * 将首字母转大写。
 	 * 
 	 * @param str
 	 * @return
 	 */
 	public static String parseFirstCharToUpperCase(String str) {
 
-		if (str == null) {
-			return null;
-		}
-
-		char firstChar = str.charAt(0);
-
-		if (firstChar >= 'a' && firstChar <= 'z') {
-			char[] arr = str.toCharArray();
-			arr[0] -= ('a' - 'A');
-			return new String(arr);
+		if (str != null && str.length() > 0) {
+			char firstChar = str.charAt(0);
+			if (firstChar >= 'a' && firstChar <= 'z') {
+				char[] arr = str.toCharArray();
+				arr[0] -= ('a' - 'A');
+				return new String(arr);
+			}
 		}
 
 		return str;
-
-		// if (str != null && str.length() > 0) {
-		// return Character.toUpperCase(str.charAt(0)) + str.substring(1);
-		// } else {
-		// return str;
-		// }
 	}
 
 	/**
@@ -124,16 +105,11 @@ public class ParseUtils {
 	 */
 	public static BigInteger parseHexStringToBigInteger(String hexString) {
 
-		BigInteger bigInteger = null;
-
 		try {
-			bigInteger = new BigInteger(hexString, 16);
+			return new BigInteger(hexString, 16);
 		} catch (Exception e) {
-			// logging...
-			// e.printStackTrace();
+			throw new RuntimeException(e);
 		}
-
-		return bigInteger;
 	}
 
 	/**
@@ -159,16 +135,11 @@ public class ParseUtils {
 	 */
 	public static BigInteger parseStringToBigInteger(String str) {
 
-		BigInteger bigInteger = null;
-
 		try {
-			bigInteger = new BigInteger(str);
+			return new BigInteger(str);
 		} catch (Exception e) {
-			// logging...
-			// e.printStackTrace();
+			throw new RuntimeException(e);
 		}
-
-		return bigInteger;
 	}
 
 	/**
@@ -233,28 +204,25 @@ public class ParseUtils {
 	 */
 	public static String parseUnicodeToString(String str) {
 
-		if (str != null) {
+		if (str != null && str.contains("\\u")) {
 
-			if (str.contains("\\u")) {
+			StringBuilder sb = new StringBuilder();
 
-				StringBuilder sb = new StringBuilder();
+			String[] hexs = str.split("\\\\u");
 
-				String[] hexs = str.split("\\\\u");
+			for (int i = 1; i < hexs.length; i++) {
 
-				for (int i = 1; i < hexs.length; i++) {
-
-					if (hexs[i].length() > 4) {
-						int c = Integer.parseInt(hexs[i].substring(0, 4), 16);
-						sb.append((char) c);
-						sb.append(hexs[i].substring(4));
-					} else {
-						int c = Integer.parseInt(hexs[i], 16);
-						sb.append((char) c);
-					}
+				if (hexs[i].length() > 4) {
+					int c = Integer.parseInt(hexs[i].substring(0, 4), 16);
+					sb.append((char) c);
+					sb.append(hexs[i].substring(4));
+				} else {
+					int c = Integer.parseInt(hexs[i], 16);
+					sb.append((char) c);
 				}
-
-				str = sb.toString();
 			}
+
+			str = sb.toString();
 		}
 
 		return str;
@@ -266,7 +234,155 @@ public class ParseUtils {
 	 * @param str
 	 * @return
 	 */
-	public static String parseToUnderlineString(String str) {
+	public static String parseCamelCaseToSnakeCase(String str) {
+
+		return parseCamelCaseTo(str, '_');
+	}
+
+	/**
+	 * 将驼峰形式的字符串转换成带中横杠形式的字符串。
+	 * 
+	 * @param str
+	 * @return
+	 */
+	public static String parseCamelCaseToKebabCase(String str) {
+
+		return parseCamelCaseTo(str, '-');
+	}
+
+	/**
+	 * 将含下划线的字符串转换成驼峰形式的字符串。
+	 * 
+	 * @param str
+	 * @return
+	 */
+	public static String parseSnakeCaseToCamelCase(String str) {
+
+		return parseToCamelCase(str, '_', null);
+	}
+
+	/**
+	 * 将含下划线的字符串转换成驼峰形式的字符串（小驼峰）。
+	 * 
+	 * @param str
+	 * @return
+	 */
+	public static String parseSnakeCaseToLowerCamelCase(String str) {
+
+		return parseToCamelCase(str, '_', false);
+	}
+
+	/**
+	 * 将含下划线的字符串转换成驼峰形式的字符串（大驼峰）。
+	 * 
+	 * @param str
+	 * @return
+	 */
+	public static String parseSnakeCaseToUpperCamelCase(String str) {
+
+		return parseToCamelCase(str, '_', true);
+	}
+
+	/**
+	 * 将含中横杠的字符串转换成驼峰形式的字符串。
+	 * 
+	 * @param str
+	 * @return
+	 */
+	public static String parseKebabCaseToCamelCase(String str) {
+
+		return parseToCamelCase(str, '-', null);
+	}
+
+	/**
+	 * 将含中横杠的字符串转换成驼峰形式的字符串（小驼峰）。
+	 * 
+	 * @param str
+	 * @return
+	 */
+	public static String parseKebabCaseToLowerCamelCase(String str) {
+
+		return parseToCamelCase(str, '-', false);
+	}
+
+	/**
+	 * 将含中横杠的字符串转换成驼峰形式的字符串（大驼峰）。
+	 * 
+	 * @param str
+	 * @return
+	 */
+	public static String parseKebabCaseToUpperCamelCase(String str) {
+
+		return parseToCamelCase(str, '-', true);
+	}
+
+	/**
+	 * 将含指定字符（下划线、中横杠等）的字符串转换成驼峰形式的字符串。
+	 * 
+	 * @param str
+	 * @param firstCharacterUppercase
+	 *            大驼峰为true，小驼峰为false
+	 * @param c
+	 * @return
+	 */
+	public static String parseToCamelCase(String str, char c, Boolean firstCharacterUppercase) {
+
+		if (str == null) {
+			return null;
+		}
+
+		if (str.indexOf(c) > -1) { // 存在指定字符的情况才进行
+
+			StringBuilder sb = new StringBuilder();
+			boolean nextUpperCase = false;
+			for (int i = 0; i < str.length(); i++) {
+				char ch = str.charAt(i);
+				if (ch == c) {
+					nextUpperCase = true;
+					continue;
+				}
+
+				if (nextUpperCase) {
+					sb.append(Character.toUpperCase(ch));
+					nextUpperCase = false;
+				} else {
+					sb.append(ch);
+				}
+			}
+
+			// 如果 firstCharacterUppercase 为 null 则不对首字母做转换处理
+			if (firstCharacterUppercase != null) {
+				if (firstCharacterUppercase) {
+					sb.setCharAt(0, Character.toUpperCase(sb.charAt(0)));
+				} else {
+					sb.setCharAt(0, Character.toLowerCase(sb.charAt(0)));
+				}
+			}
+
+			str = sb.toString();
+
+		} else {
+			// 如果 firstCharacterUppercase 为 null 或 str 为空则不对首字母做转换处理
+			if (firstCharacterUppercase != null && !str.isEmpty()) {
+				if (firstCharacterUppercase) {
+					str = Character.toUpperCase(str.charAt(0)) + str.substring(1);
+				} else {
+					str = Character.toLowerCase(str.charAt(0)) + str.substring(1);
+				}
+			}
+		}
+
+		return str;
+	}
+
+	/**
+	 * 将驼峰形式的字符串转换成带指定字符（下划线、中横杠等）形式的字符串。
+	 * 
+	 * @param str
+	 * @param c
+	 * @return
+	 */
+	public static String parseCamelCaseTo(String str, char c) {
 
 		if (str == null) {
 			return null;
@@ -276,76 +392,15 @@ public class ParseUtils {
 		StringBuilder sb = new StringBuilder();
 
 		for (int i = 0; i < length; i++) {
-			char c = str.charAt(i);
-			if (Character.isUpperCase(c)) {
+			char ch = str.charAt(i);
+			if (Character.isUpperCase(ch)) {
 				if (i > 0) {
-					sb.append('_');
+					sb.append(c);
 				}
-				sb.append(Character.toLowerCase(c));
+				sb.append(Character.toLowerCase(ch));
 			} else {
-				sb.append(c);
+				sb.append(ch);
 			}
-		}
-
-		return sb.toString();
-	}
-
-	/**
-	 * 将含下划线的字符串转换成驼峰形式的字符串（小驼峰）。
-	 * 
-	 * @param str
-	 * @return
-	 */
-	public static String parseToLowerCamelCaseString(String str) {
-
-		return parseToCamelCaseString(str, false);
-	}
-
-	/**
-	 * 将含下划线的字符串转换成驼峰形式的字符串（大驼峰）。
-	 * 
-	 * @param str
-	 * @return
-	 */
-	public static String parseToUpperCamelCaseString(String str) {
-
-		return parseToCamelCaseString(str, true);
-	}
-
-	/**
-	 * 将含下划线的字符串转换成驼峰形式的字符串。
-	 * 
-	 * @param str
-	 * @param firstCharacterUppercase
-	 * @return
-	 */
-	public static String parseToCamelCaseString(String str, boolean firstCharacterUppercase) {
-
-		if (str == null) {
-			return null;
-		}
-
-		StringBuilder sb = new StringBuilder();
-		boolean nextUpperCase = false;
-		for (int i = 0; i < str.length(); i++) {
-			char c = str.charAt(i);
-			if (c == '_') {
-				nextUpperCase = true;
-				continue;
-			}
-
-			if (nextUpperCase) {
-				sb.append(Character.toUpperCase(c));
-				nextUpperCase = false;
-			} else {
-				sb.append(c);
-			}
-		}
-
-		if (firstCharacterUppercase) {
-			sb.setCharAt(0, Character.toUpperCase(sb.charAt(0)));
-		} else {
-			sb.setCharAt(0, Character.toLowerCase(sb.charAt(0)));
 		}
 
 		return sb.toString();

@@ -68,7 +68,7 @@ public class PathUtils {
 	 * @return
 	 */
 	public static String getClassesRootPath() {
-	
+
 		try {
 			return getClassesRootFile().getCanonicalPath();
 		} catch (IOException e) {
@@ -82,7 +82,7 @@ public class PathUtils {
 	 * @return
 	 */
 	public static File getClassesRootFile() {
-	
+
 		return new File(url.getPath());
 	}
 
