@@ -9,126 +9,123 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
-//import java.io.OutputStreamWriter;
-//import java.io.UnsupportedEncodingException;
 
 /**
  * 数据流转换工具类。
  * <p>
- * 更专业的可参 Apache Commons IO。
+ * 更专业的可参 Apache Commons IO （IOUtils.class）。
  *
  */
 
 public class StreamUtils {
 
+	private static final int DEFAULT_BUFFER_SIZE = 1024 * 4; // 默认缓冲区大小
+
 	/**
 	 * 输入流转为输出流。
 	 * 
-	 * @param inputStream
-	 * @param outputStream
+	 * @param in
+	 * @param out
 	 * @return
 	 */
-	public static boolean convertStream(InputStream inputStream, OutputStream outputStream) {
+	public static boolean convertStream(InputStream in, OutputStream out) {
 
-		boolean b = false;
+		return convertStream(in, out, DEFAULT_BUFFER_SIZE);
+	}
 
-		if (inputStream != null && outputStream != null) {
-			byte[] buffer = new byte[1024 * 4];
-			int len = 0;
+	/**
+	 * 输入流转为输出流（指定缓冲区大小）。
+	 * 
+	 * @param in
+	 * @param out
+	 * @param bufferSize
+	 * @return
+	 */
+	public static boolean convertStream(InputStream in, OutputStream out, int bufferSize) {
+
+		if (in != null && out != null) {
+			byte[] buffer = new byte[bufferSize];
+			int len;
 			try {
-				while ((len = inputStream.read(buffer)) != -1) {
-					outputStream.write(buffer, 0, len);
+				while ((len = in.read(buffer)) != -1) {
+					out.write(buffer, 0, len);
 				}
-				b = true;
+				return true;
 			} catch (Exception e) {
-				// logging...
-				e.printStackTrace();
+				throw new RuntimeException(e);
 			}
 		}
 
-		return b;
+		return false;
 	}
 
 	/**
 	 * 从输入流中获取数据。
 	 * 
-	 * @param inputStream
+	 * @param in
 	 * @return
 	 */
-	public static byte[] readStreamToByte(InputStream inputStream) {
+	public static byte[] readStreamToByte(InputStream in) {
 
-		byte[] result = null;
-		ByteArrayOutputStream outputStream = null;
+		ByteArrayOutputStream out = null;
 
-		if (inputStream != null) {
+		if (in != null) {
 			try {
-				// result = new byte[inputStream.available()]; // 注意：当从网络 URL 中获取输入流时不能使用 inputStream.available()
-				// inputStream.read(result);
-
-				outputStream = new ByteArrayOutputStream();
-				byte[] buffer = new byte[1024 * 4];
-				int len = 0;
-				while ((len = inputStream.read(buffer)) != -1) {
-					outputStream.write(buffer, 0, len);
+				out = new ByteArrayOutputStream();
+				if (convertStream(in, out)) {
+					return out.toByteArray();
 				}
-				result = outputStream.toByteArray();
-
 			} catch (Exception e) {
-				// logging...
-				e.printStackTrace();
+				throw new RuntimeException(e);
 			} finally {
-				if (outputStream != null) {
+				if (out != null) {
 					try {
-						outputStream.close();
+						out.close();
 					} catch (IOException e) {
-						// logging...
 						e.printStackTrace();
 					}
 				}
 			}
 		}
 
-		return result;
+		return null;
 	}
 
 	/**
 	 * 从输入流中获取数据。
 	 * 
-	 * @param inputStream
+	 * @param in
 	 * @return
 	 */
-	public static String readStreamToString(InputStream inputStream) {
+	public static String readStreamToString(InputStream in) {
 
-		return readStreamToString(inputStream, null);
+		return readStreamToString(in, null);
 	}
 
 	/**
 	 * 从输入流中获取数据（指定字符编码）。
 	 * 
-	 * @param inputStream
+	 * @param in
 	 * @param charset
 	 * @return
 	 */
-	public static String readStreamToString(InputStream inputStream, String charset) {
+	public static String readStreamToString(InputStream in, String charset) {
 
-		String str = null;
-
-		byte[] result = readStreamToByte(inputStream);
+		byte[] result = readStreamToByte(in);
 
 		if (result != null) {
 			if (charset == null) {
-				str = new String(result);
+				return new String(result);
 			} else {
 				try {
-					str = new String(result, charset);
+					return new String(result, charset);
 				} catch (Exception e) {
-					// logging...
-					e.printStackTrace();
+					throw new RuntimeException(e);
 				}
 			}
 		}
 
-		return str;
+		return null;
 	}
 
 	/**
@@ -139,29 +136,25 @@ public class StreamUtils {
 	 */
 	public static byte[] readFileToByte(File file) {
 
-		byte[] result = null;
-
 		if (file != null) {
-			InputStream inputStream = null;
+			InputStream in = null;
 			try {
-				inputStream = new FileInputStream(file);
-				result = readStreamToByte(inputStream);
+				in = new FileInputStream(file);
+				return readStreamToByte(in);
 			} catch (Exception e) {
-				// logging...
-				e.printStackTrace();
+				throw new RuntimeException(e);
 			} finally {
-				if (inputStream != null) {
+				if (in != null) {
 					try {
-						inputStream.close();
+						in.close();
 					} catch (IOException e) {
-						// logging...
 						e.printStackTrace();
 					}
 				}
 			}
 		}
 
-		return result;
+		return null;
 	}
 
 	/**
@@ -184,29 +177,25 @@ public class StreamUtils {
 	 */
 	public static String readFileToString(File file, String charset) {
 
-		String str = null;
-
 		if (file != null) {
-			InputStream inputStream = null;
+			InputStream in = null;
 			try {
-				inputStream = new FileInputStream(file);
-				str = readStreamToString(inputStream, charset);
+				in = new FileInputStream(file);
+				return readStreamToString(in, charset);
 			} catch (Exception e) {
-				// logging...
-				e.printStackTrace();
+				throw new RuntimeException(e);
 			} finally {
-				if (inputStream != null) {
+				if (in != null) {
 					try {
-						inputStream.close();
+						in.close();
 					} catch (IOException e) {
-						// logging...
 						e.printStackTrace();
 					}
 				}
 			}
 		}
 
-		return str;
+		return null;
 	}
 
 	/**
@@ -249,48 +238,45 @@ public class StreamUtils {
 	/**
 	 * 将数据写入输出流。
 	 * 
-	 * @param outputStream
+	 * @param out
 	 * @param bytes
 	 * @return
 	 */
-	public static boolean writeStreamFromByte(OutputStream outputStream, byte[] bytes) {
+	public static boolean writeStreamFromByte(OutputStream out, byte[] bytes) {
 
-		boolean b = false;
-
-		if (outputStream != null && bytes != null) {
+		if (out != null && bytes != null) {
 			try {
-				outputStream.write(bytes);
-				b = true;
+				out.write(bytes);
+				return true;
 			} catch (IOException e) {
-				// logging...
-				e.printStackTrace();
+				throw new RuntimeException(e);
 			}
 		}
 
-		return b;
+		return false;
 	}
 
 	/**
 	 * 将数据写入输出流。
 	 * 
-	 * @param outputStream
+	 * @param out
 	 * @param str
 	 * @return
 	 */
-	public static boolean writeStreamFromString(OutputStream outputStream, String str) {
+	public static boolean writeStreamFromString(OutputStream out, String str) {
 
-		return writeStreamFromString(outputStream, str, null);
+		return writeStreamFromString(out, str, null);
 	}
 
 	/**
 	 * 将数据写入输出流（指定字符编码）。
 	 * 
-	 * @param outputStream
+	 * @param out
 	 * @param str
 	 * @param charset
 	 * @return
 	 */
-	public static boolean writeStreamFromString(OutputStream outputStream, String str, String charset) {
+	public static boolean writeStreamFromString(OutputStream out, String str, String charset) {
 
 		byte[] bytes = null;
 
@@ -301,13 +287,12 @@ public class StreamUtils {
 				try {
 					bytes = str.getBytes(charset);
 				} catch (Exception e) {
-					// logging...
-					e.printStackTrace();
+					throw new RuntimeException(e);
 				}
 			}
 		}
 
-		return writeStreamFromByte(outputStream, bytes);
+		return writeStreamFromByte(out, bytes);
 	}
 
 	/**
@@ -319,29 +304,25 @@ public class StreamUtils {
 	 */
 	public static boolean writeFileFromByte(File file, byte[] bytes) {
 
-		boolean b = false;
-
 		if (file != null) {
-			OutputStream outputStream = null;
+			OutputStream out = null;
 			try {
-				outputStream = new FileOutputStream(file);
-				b = writeStreamFromByte(outputStream, bytes);
+				out = new FileOutputStream(file);
+				return writeStreamFromByte(out, bytes);
 			} catch (Exception e) {
-				// logging...
-				e.printStackTrace();
+				throw new RuntimeException(e);
 			} finally {
-				if (outputStream != null) {
+				if (out != null) {
 					try {
-						outputStream.close();
+						out.close();
 					} catch (IOException e) {
-						// logging...
 						e.printStackTrace();
 					}
 				}
 			}
 		}
 
-		return b;
+		return false;
 	}
 
 	/**
@@ -375,7 +356,6 @@ public class StreamUtils {
 				try {
 					bytes = str.getBytes(charset);
 				} catch (Exception e) {
-					// logging...
 					e.printStackTrace();
 				}
 			}
@@ -424,62 +404,6 @@ public class StreamUtils {
 		return writeFileFromString(file, str, charset);
 	}
 
-	// /**
-	// * 将数据追加写入输出流。
-	// *
-	// * @param outputStream
-	// * @param str
-	// * @return
-	// */
-	// public static boolean appendStreamFromString(OutputStream outputStream, String str) {
-	//
-	// return appendStreamFromString(outputStream, str, null);
-	// }
-
-	// /**
-	// * 将数据追加写入输出流（指定字符编码）。
-	// *
-	// * @param outputStream
-	// * @param str
-	// * @param charset
-	// * @return
-	// */
-	// public static boolean appendStreamFromString(OutputStream outputStream, String str, String charset) {
-	//
-	// boolean b = false;
-	// OutputStreamWriter outputStreamWriter = null;
-	//
-	// if (charset == null) {
-	// outputStreamWriter = new OutputStreamWriter(outputStream);
-	// } else {
-	// try {
-	// outputStreamWriter = new OutputStreamWriter(outputStream, charset);
-	// } catch (UnsupportedEncodingException e) {
-	// // logging...
-	// e.printStackTrace();
-	// }
-	// }
-	//
-	// try {
-	// outputStreamWriter.write(str);
-	// b = true;
-	// } catch (IOException e) {
-	// // logging...
-	// e.printStackTrace();
-	// }
-	//
-	// try {
-	// if (outputStreamWriter != null) {
-	// outputStreamWriter.close();
-	// }
-	// } catch (IOException e) {
-	// // logging...
-	// e.printStackTrace();
-	// }
-	//
-	// return b;
-	// }
-
 	/**
 	 * 将数据追加写入文件。
 	 * 
@@ -502,27 +426,21 @@ public class StreamUtils {
 	 */
 	public static boolean appendFileFromString(File file, String str, String charset) {
 
-		boolean b = false;
-
-		OutputStream outputStream = null;
+		OutputStream out = null;
 		try {
-			outputStream = new FileOutputStream(file, true); // 写入文件末尾处
-			b = writeStreamFromString(outputStream, str, charset);
+			out = new FileOutputStream(file, true); // 写入文件末尾处
+			return writeStreamFromString(out, str, charset);
 		} catch (Exception e) {
-			// logging...
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		} finally {
-			if (outputStream != null) {
+			if (out != null) {
 				try {
-					outputStream.close();
+					out.close();
 				} catch (IOException e) {
-					// logging...
 					e.printStackTrace();
 				}
 			}
 		}
-
-		return b;
 	}
 
 	/**
@@ -560,39 +478,32 @@ public class StreamUtils {
 	 */
 	public static boolean writeObject(File file, Object obj) {
 
-		boolean b = false;
-
-		FileOutputStream fileOutputStream = null;
-		ObjectOutputStream objectOutputStream = null;
+		FileOutputStream fos = null;
+		ObjectOutputStream oos = null;
 		try {
-			fileOutputStream = new FileOutputStream(file);
-			objectOutputStream = new ObjectOutputStream(fileOutputStream);
-			objectOutputStream.writeObject(obj);
-			objectOutputStream.reset();
-			b = true;
+			fos = new FileOutputStream(file);
+			oos = new ObjectOutputStream(fos);
+			oos.writeObject(obj);
+			oos.reset();
+			return true;
 		} catch (Exception e) {
-			// logging
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		} finally {
-			if (objectOutputStream != null) {
+			if (oos != null) {
 				try {
-					objectOutputStream.close();
+					oos.close();
 				} catch (IOException e) {
-					// logging
 					e.printStackTrace();
 				}
 			}
-			if (fileOutputStream != null) {
+			if (fos != null) {
 				try {
-					fileOutputStream.close();
+					fos.close();
 				} catch (IOException e) {
-					// logging
 					e.printStackTrace();
 				}
 			}
 		}
-
-		return b;
 	}
 
 	/**
@@ -616,37 +527,30 @@ public class StreamUtils {
 	 */
 	public static Object readObject(File file) {
 
-		Object obj = null;
-
-		FileInputStream fileInputStream = null;
-		ObjectInputStream objectInputStream = null;
+		FileInputStream fis = null;
+		ObjectInputStream ois = null;
 		try {
-			fileInputStream = new FileInputStream(file);
-			objectInputStream = new ObjectInputStream(fileInputStream);
-			obj = (Object) objectInputStream.readObject();
+			fis = new FileInputStream(file);
+			ois = new ObjectInputStream(fis);
+			return ois.readObject();
 		} catch (Exception e) {
-			// logging...
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		} finally {
-			if (objectInputStream != null) {
+			if (ois != null) {
 				try {
-					objectInputStream.close();
+					ois.close();
 				} catch (IOException e) {
-					// logging...
 					e.printStackTrace();
 				}
 			}
-			if (fileInputStream != null) {
+			if (fis != null) {
 				try {
-					fileInputStream.close();
+					fis.close();
 				} catch (IOException e) {
-					// logging...
 					e.printStackTrace();
 				}
 			}
 		}
-
-		return obj;
 	}
 
 	/**
@@ -662,10 +566,10 @@ public class StreamUtils {
 	}
 
 	/**
-	 * 简易判断文件编码，默认为 GBK，仅判断 UTF-8，虽然不准确，但一般中文系统除了 UTF-8 之外多数就是 GBK 了，所以在此仅作最简单初级的判断。<br>
-	 * <br>
-	 * 
-	 * 若要实现更复杂的文件编码检测，可使用 cpdetector 进行探测。
+	 * 简易判断文件编码，默认为 GBK，仅判断 UTF-8，虽然不准确，但一般中文系统除了 UTF-8 之外多数就是 GBK
+	 * 了，所以在此仅作最简单初级的判断。
+	 * <p>
+	 * 若要实现更专业的文件编码检测，可使用 cpdetector 进行探测。
 	 * 
 	 * @param file
 	 * @return
@@ -673,23 +577,21 @@ public class StreamUtils {
 	public static String getFileCharset(File file) {
 
 		String charset = "GBK";
-		InputStream inputStream = null;
+		InputStream in = null;
 		try {
-			inputStream = new FileInputStream(file);
+			in = new FileInputStream(file);
 			byte[] b = new byte[3];
-			inputStream.read(b);
+			in.read(b);
 			if (b[0] == -17 && b[1] == -69 && b[2] == -65) {
 				charset = "UTF-8";
 			}
 		} catch (Exception e) {
-			// logging...
 			e.printStackTrace();
 		} finally {
-			if (inputStream != null) {
+			if (in != null) {
 				try {
-					inputStream.close();
+					in.close();
 				} catch (IOException e) {
-					// logging...
 					e.printStackTrace();
 				}
 			}
@@ -699,10 +601,10 @@ public class StreamUtils {
 	}
 
 	/**
-	 * 简易判断文件编码，默认为 GBK，仅判断 UTF-8，虽然不准确，但一般中文系统除了 UTF-8 之外多数就是 GBK 了，所以在此仅作最简单初级的判断。<br>
-	 * <br>
-	 * 
-	 * 若要实现更复杂的文件编码检测，可使用 cpdetector 进行探测。
+	 * 简易判断文件编码，默认为 GBK，仅判断 UTF-8，虽然不准确，但一般中文系统除了 UTF-8 之外多数就是 GBK
+	 * 了，所以在此仅作最简单初级的判断。
+	 * <p>
+	 * 若要实现更专业的文件编码检测，可使用 cpdetector 进行探测。
 	 * 
 	 * @param filePath
 	 * @return

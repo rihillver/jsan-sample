@@ -11,7 +11,7 @@ public class HttpUtilsTest extends TestCase {
 
 		long start = System.nanoTime();
 
-		String url = "http://scm.gxtaixing.cn/app/query.do?key=" + URLEncoder.encode("可乐", "utf-8");
+		String url = "http://www.abc.com/app/query.do?key=" + URLEncoder.encode("可乐", "utf-8");
 		System.out.println(HttpUtils.getString(url));
 		long end = System.nanoTime() - start;
 
