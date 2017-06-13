@@ -14,6 +14,8 @@ import javax.crypto.spec.SecretKeySpec;
 
 public class AESUtils {
 
+	private static final String ALGORITHM = "AES";
+
 	/**
 	 * 加密。
 	 * 
@@ -23,25 +25,18 @@ public class AESUtils {
 	 */
 	public static byte[] encrypt(byte[] content, String password) {
 
-		byte[] result = null;
-
-		if (content != null && password != null) {
-			try {
-				KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
-				keyGenerator.init(128, new SecureRandom(password.getBytes()));
-				SecretKey secretKey = keyGenerator.generateKey();
-				byte[] encoded = secretKey.getEncoded();
-				SecretKeySpec secretKeySpec = new SecretKeySpec(encoded, "AES");
-				Cipher cipher = Cipher.getInstance("AES");
-				cipher.init(Cipher.ENCRYPT_MODE, secretKeySpec);
-				result = cipher.doFinal(content);
-			} catch (Exception e) {
-				// logging...
-				e.printStackTrace();
-			}
+		try {
+			KeyGenerator keyGenerator = KeyGenerator.getInstance(ALGORITHM);
+			keyGenerator.init(128, new SecureRandom(password.getBytes()));
+			SecretKey secretKey = keyGenerator.generateKey();
+			byte[] encoded = secretKey.getEncoded();
+			SecretKeySpec secretKeySpec = new SecretKeySpec(encoded, ALGORITHM);
+			Cipher cipher = Cipher.getInstance(ALGORITHM);
+			cipher.init(Cipher.ENCRYPT_MODE, secretKeySpec);
+			return cipher.doFinal(content);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
 		}
-
-		return result;
 	}
 
 	/**
@@ -53,20 +48,13 @@ public class AESUtils {
 	 */
 	public static String encrypt(String content, String password) {
 
-		String result = null;
-
-		if (content != null && password != null) {
-			try {
-				byte[] contents = content.getBytes();
-				byte[] results = encrypt(contents, password);
-				result = parseByteToHexString(results);
-			} catch (Exception e) {
-				// logging...
-				e.printStackTrace();
-			}
+		try {
+			byte[] contents = content.getBytes();
+			byte[] results = encrypt(contents, password);
+			return parseByteToHexString(results);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
 		}
-
-		return result;
 	}
 
 	/**
@@ -78,25 +66,18 @@ public class AESUtils {
 	 */
 	public static byte[] decrypt(byte[] content, String password) {
 
-		byte[] result = null;
-
-		if (content != null && password != null) {
-			try {
-				KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
-				keyGenerator.init(128, new SecureRandom(password.getBytes()));
-				SecretKey secretKey = keyGenerator.generateKey();
-				byte[] encoded = secretKey.getEncoded();
-				SecretKeySpec secretKeySpec = new SecretKeySpec(encoded, "AES");
-				Cipher cipher = Cipher.getInstance("AES");
-				cipher.init(Cipher.DECRYPT_MODE, secretKeySpec);
-				result = cipher.doFinal(content);
-			} catch (Exception e) {
-				// logging...
-				e.printStackTrace();
-			}
+		try {
+			KeyGenerator keyGenerator = KeyGenerator.getInstance(ALGORITHM);
+			keyGenerator.init(128, new SecureRandom(password.getBytes()));
+			SecretKey secretKey = keyGenerator.generateKey();
+			byte[] encoded = secretKey.getEncoded();
+			SecretKeySpec secretKeySpec = new SecretKeySpec(encoded, ALGORITHM);
+			Cipher cipher = Cipher.getInstance(ALGORITHM);
+			cipher.init(Cipher.DECRYPT_MODE, secretKeySpec);
+			return cipher.doFinal(content);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
 		}
-
-		return result;
 	}
 
 	/**
@@ -108,15 +89,9 @@ public class AESUtils {
 	 */
 	public static String decrypt(String content, String password) {
 
-		String result = null;
-
-		if (content != null && password != null) {
-			byte[] contents = parseHexStringToByte(content);
-			byte[] results = decrypt(contents, password);
-			result = new String(results);
-		}
-
-		return result;
+		byte[] contents = parseHexStringToByte(content);
+		byte[] results = decrypt(contents, password);
+		return new String(results);
 	}
 
 	/**
@@ -166,30 +141,5 @@ public class AESUtils {
 
 		return result;
 	}
-	
-	/*
-	public static void main(String[] args) {
-
-		String content = "我是谁啊";
-		String password = "abc2008";
-
-		long l = System.currentTimeMillis();
-
-		String ciphertext = encrypt(content, password);
-
-		System.out.println("---加密---");
-		System.out.println("密文=" + ciphertext);
-		System.out.println("耗时=" + (System.currentTimeMillis() - l));
-
-		l = System.currentTimeMillis();
-
-		String text = decrypt(ciphertext, password);
-
-		System.out.println("---解密---");
-		System.out.println("原文=" + text);
-		System.out.println("耗时=" + (System.currentTimeMillis() - l));
-
-	}
-	*/
 
 }
