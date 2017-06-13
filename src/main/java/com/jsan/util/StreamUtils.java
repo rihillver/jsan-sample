@@ -26,11 +26,11 @@ public class StreamUtils {
 	 * 
 	 * @param in
 	 * @param out
-	 * @return
+	 * @throws IOException
 	 */
-	public static boolean convertStream(InputStream in, OutputStream out) {
+	public static void convertStream(InputStream in, OutputStream out) throws IOException {
 
-		return convertStream(in, out, DEFAULT_BUFFER_SIZE);
+		convertStream(in, out, DEFAULT_BUFFER_SIZE);
 	}
 
 	/**
@@ -39,24 +39,17 @@ public class StreamUtils {
 	 * @param in
 	 * @param out
 	 * @param bufferSize
-	 * @return
+	 * @throws IOException
 	 */
-	public static boolean convertStream(InputStream in, OutputStream out, int bufferSize) {
+	public static void convertStream(InputStream in, OutputStream out, int bufferSize) throws IOException {
 
 		if (in != null && out != null) {
 			byte[] buffer = new byte[bufferSize];
 			int len;
-			try {
-				while ((len = in.read(buffer)) != -1) {
-					out.write(buffer, 0, len);
-				}
-				return true;
-			} catch (Exception e) {
-				throw new RuntimeException(e);
+			while ((len = in.read(buffer)) != -1) {
+				out.write(buffer, 0, len);
 			}
 		}
-
-		return false;
 	}
 
 	/**
@@ -64,31 +57,29 @@ public class StreamUtils {
 	 * 
 	 * @param in
 	 * @return
+	 * @throws IOException
 	 */
-	public static byte[] readStreamToByte(InputStream in) {
+	public static byte[] readStreamToByte(InputStream in) throws IOException {
+
+		if (in == null) {
+			return null;
+		}
 
 		ByteArrayOutputStream out = null;
-
-		if (in != null) {
-			try {
-				out = new ByteArrayOutputStream();
-				if (convertStream(in, out)) {
-					return out.toByteArray();
-				}
-			} catch (Exception e) {
-				throw new RuntimeException(e);
-			} finally {
-				if (out != null) {
-					try {
-						out.close();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
+		try {
+			out = new ByteArrayOutputStream();
+			convertStream(in, out);
+			return out.toByteArray();
+		} finally {
+			if (out != null) {
+				try {
+					out.close();
+				} catch (IOException e) {
+					e.printStackTrace();
 				}
 			}
 		}
 
-		return null;
 	}
 
 	/**
@@ -96,8 +87,9 @@ public class StreamUtils {
 	 * 
 	 * @param in
 	 * @return
+	 * @throws IOException
 	 */
-	public static String readStreamToString(InputStream in) {
+	public static String readStreamToString(InputStream in) throws IOException {
 
 		return readStreamToString(in, null);
 	}
@@ -108,24 +100,45 @@ public class StreamUtils {
 	 * @param in
 	 * @param charset
 	 * @return
+	 * @throws IOException
 	 */
-	public static String readStreamToString(InputStream in, String charset) {
+	public static String readStreamToString(InputStream in, String charset) throws IOException {
+
+		if (in == null) {
+			return null;
+		}
 
 		byte[] result = readStreamToByte(in);
 
-		if (result != null) {
-			if (charset == null) {
-				return new String(result);
-			} else {
+		if (charset == null) {
+			return new String(result);
+		} else {
+			return new String(result, charset);
+		}
+	}
+
+	/**
+	 * 从文件获取数据。
+	 * 
+	 * @param file
+	 * @return
+	 * @throws IOException
+	 */
+	public static byte[] readFileToByte(File file) throws IOException {
+
+		InputStream in = null;
+		try {
+			in = new FileInputStream(file);
+			return readStreamToByte(in);
+		} finally {
+			if (in != null) {
 				try {
-					return new String(result, charset);
-				} catch (Exception e) {
-					throw new RuntimeException(e);
+					in.close();
+				} catch (IOException e) {
+					e.printStackTrace();
 				}
 			}
 		}
-
-		return null;
 	}
 
 	/**
@@ -133,37 +146,9 @@ public class StreamUtils {
 	 * 
 	 * @param file
 	 * @return
+	 * @throws IOException
 	 */
-	public static byte[] readFileToByte(File file) {
-
-		if (file != null) {
-			InputStream in = null;
-			try {
-				in = new FileInputStream(file);
-				return readStreamToByte(in);
-			} catch (Exception e) {
-				throw new RuntimeException(e);
-			} finally {
-				if (in != null) {
-					try {
-						in.close();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				}
-			}
-		}
-
-		return null;
-	}
-
-	/**
-	 * 从文件获取数据。
-	 * 
-	 * @param file
-	 * @return
-	 */
-	public static String readFileToString(File file) {
+	public static String readFileToString(File file) throws IOException {
 
 		return readFileToString(file, null);
 	}
@@ -174,28 +159,23 @@ public class StreamUtils {
 	 * @param file
 	 * @param charset
 	 * @return
+	 * @throws IOException
 	 */
-	public static String readFileToString(File file, String charset) {
+	public static String readFileToString(File file, String charset) throws IOException {
 
-		if (file != null) {
-			InputStream in = null;
-			try {
-				in = new FileInputStream(file);
-				return readStreamToString(in, charset);
-			} catch (Exception e) {
-				throw new RuntimeException(e);
-			} finally {
-				if (in != null) {
-					try {
-						in.close();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
+		InputStream in = null;
+		try {
+			in = new FileInputStream(file);
+			return readStreamToString(in, charset);
+		} finally {
+			if (in != null) {
+				try {
+					in.close();
+				} catch (IOException e) {
+					e.printStackTrace();
 				}
 			}
 		}
-
-		return null;
 	}
 
 	/**
@@ -203,8 +183,9 @@ public class StreamUtils {
 	 * 
 	 * @param filePath
 	 * @return
+	 * @throws IOException
 	 */
-	public static byte[] readFileToByte(String filePath) {
+	public static byte[] readFileToByte(String filePath) throws IOException {
 
 		File file = new File(filePath);
 		return readFileToByte(file);
@@ -215,8 +196,9 @@ public class StreamUtils {
 	 * 
 	 * @param filePath
 	 * @return
+	 * @throws IOException
 	 */
-	public static String readFileToString(String filePath) {
+	public static String readFileToString(String filePath) throws IOException {
 
 		File file = new File(filePath);
 		return readFileToString(file);
@@ -228,8 +210,9 @@ public class StreamUtils {
 	 * @param filePath
 	 * @param charset
 	 * @return
+	 * @throws IOException
 	 */
-	public static String readFileToString(String filePath, String charset) {
+	public static String readFileToString(String filePath, String charset) throws IOException {
 
 		File file = new File(filePath);
 		return readFileToString(file, charset);
@@ -240,20 +223,11 @@ public class StreamUtils {
 	 * 
 	 * @param out
 	 * @param bytes
-	 * @return
+	 * @throws IOException
 	 */
-	public static boolean writeStreamFromByte(OutputStream out, byte[] bytes) {
+	public static void writeStreamFromByte(OutputStream out, byte[] bytes) throws IOException {
 
-		if (out != null && bytes != null) {
-			try {
-				out.write(bytes);
-				return true;
-			} catch (IOException e) {
-				throw new RuntimeException(e);
-			}
-		}
-
-		return false;
+		out.write(bytes);
 	}
 
 	/**
@@ -261,11 +235,11 @@ public class StreamUtils {
 	 * 
 	 * @param out
 	 * @param str
-	 * @return
+	 * @throws IOException
 	 */
-	public static boolean writeStreamFromString(OutputStream out, String str) {
+	public static void writeStreamFromString(OutputStream out, String str) throws IOException {
 
-		return writeStreamFromString(out, str, null);
+		writeStreamFromString(out, str, null);
 	}
 
 	/**
@@ -274,25 +248,20 @@ public class StreamUtils {
 	 * @param out
 	 * @param str
 	 * @param charset
-	 * @return
+	 * @throws IOException
 	 */
-	public static boolean writeStreamFromString(OutputStream out, String str, String charset) {
-
-		byte[] bytes = null;
+	public static void writeStreamFromString(OutputStream out, String str, String charset) throws IOException {
 
 		if (str != null) {
+			byte[] bytes;
 			if (charset == null) {
 				bytes = str.getBytes();
 			} else {
-				try {
-					bytes = str.getBytes(charset);
-				} catch (Exception e) {
-					throw new RuntimeException(e);
-				}
+				bytes = str.getBytes(charset);
 			}
+			writeStreamFromByte(out, bytes);
 		}
 
-		return writeStreamFromByte(out, bytes);
 	}
 
 	/**
@@ -300,29 +269,23 @@ public class StreamUtils {
 	 * 
 	 * @param file
 	 * @param bytes
-	 * @return
+	 * @throws IOException
 	 */
-	public static boolean writeFileFromByte(File file, byte[] bytes) {
+	public static void writeFileFromByte(File file, byte[] bytes) throws IOException {
 
-		if (file != null) {
-			OutputStream out = null;
-			try {
-				out = new FileOutputStream(file);
-				return writeStreamFromByte(out, bytes);
-			} catch (Exception e) {
-				throw new RuntimeException(e);
-			} finally {
-				if (out != null) {
-					try {
-						out.close();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
+		OutputStream out = null;
+		try {
+			out = new FileOutputStream(file);
+			writeStreamFromByte(out, bytes);
+		} finally {
+			if (out != null) {
+				try {
+					out.close();
+				} catch (IOException e) {
+					e.printStackTrace();
 				}
 			}
 		}
-
-		return false;
 	}
 
 	/**
@@ -330,11 +293,11 @@ public class StreamUtils {
 	 * 
 	 * @param file
 	 * @param str
-	 * @return
+	 * @throws IOException
 	 */
-	public static boolean writeFileFromString(File file, String str) {
+	public static void writeFileFromString(File file, String str) throws IOException {
 
-		return writeFileFromString(file, str, null);
+		writeFileFromString(file, str, null);
 	}
 
 	/**
@@ -343,25 +306,19 @@ public class StreamUtils {
 	 * @param file
 	 * @param str
 	 * @param charset
-	 * @return
+	 * @throws IOException
 	 */
-	public static boolean writeFileFromString(File file, String str, String charset) {
-
-		byte[] bytes = null;
+	public static void writeFileFromString(File file, String str, String charset) throws IOException {
 
 		if (str != null) {
+			byte[] bytes = null;
 			if (charset == null) {
 				bytes = str.getBytes();
 			} else {
-				try {
-					bytes = str.getBytes(charset);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
+				bytes = str.getBytes(charset);
 			}
+			writeFileFromByte(file, bytes);
 		}
-
-		return writeFileFromByte(file, bytes);
 	}
 
 	/**
@@ -369,12 +326,12 @@ public class StreamUtils {
 	 * 
 	 * @param filePath
 	 * @param bytes
-	 * @return
+	 * @throws IOException
 	 */
-	public static boolean writeFileFromByte(String filePath, byte[] bytes) {
+	public static void writeFileFromByte(String filePath, byte[] bytes) throws IOException {
 
 		File file = new File(filePath);
-		return writeFileFromByte(file, bytes);
+		writeFileFromByte(file, bytes);
 	}
 
 	/**
@@ -382,12 +339,12 @@ public class StreamUtils {
 	 * 
 	 * @param filePath
 	 * @param str
-	 * @return
+	 * @throws IOException
 	 */
-	public static boolean writeFileFromString(String filePath, String str) {
+	public static void writeFileFromString(String filePath, String str) throws IOException {
 
 		File file = new File(filePath);
-		return writeFileFromString(file, str);
+		writeFileFromString(file, str);
 	}
 
 	/**
@@ -396,12 +353,12 @@ public class StreamUtils {
 	 * @param filePath
 	 * @param str
 	 * @param charset
-	 * @return
+	 * @throws IOException
 	 */
-	public static boolean writeFileFromString(String filePath, String str, String charset) {
+	public static void writeFileFromString(String filePath, String str, String charset) throws IOException {
 
 		File file = new File(filePath);
-		return writeFileFromString(file, str, charset);
+		writeFileFromString(file, str, charset);
 	}
 
 	/**
@@ -409,11 +366,11 @@ public class StreamUtils {
 	 * 
 	 * @param file
 	 * @param str
-	 * @return
+	 * @throws IOException
 	 */
-	public static boolean appendFileFromString(File file, String str) {
+	public static void appendFileFromString(File file, String str) throws IOException {
 
-		return appendFileFromString(file, str, null);
+		appendFileFromString(file, str, null);
 	}
 
 	/**
@@ -422,16 +379,14 @@ public class StreamUtils {
 	 * @param file
 	 * @param str
 	 * @param charset
-	 * @return
+	 * @throws IOException
 	 */
-	public static boolean appendFileFromString(File file, String str, String charset) {
+	public static void appendFileFromString(File file, String str, String charset) throws IOException {
 
 		OutputStream out = null;
 		try {
 			out = new FileOutputStream(file, true); // 写入文件末尾处
-			return writeStreamFromString(out, str, charset);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
+			writeStreamFromString(out, str, charset);
 		} finally {
 			if (out != null) {
 				try {
@@ -448,11 +403,11 @@ public class StreamUtils {
 	 * 
 	 * @param filePath
 	 * @param str
-	 * @return
+	 * @throws IOException
 	 */
-	public static boolean appendFileFromString(String filePath, String str) {
+	public static void appendFileFromString(String filePath, String str) throws IOException {
 
-		return appendFileFromString(filePath, str, null);
+		appendFileFromString(filePath, str, null);
 	}
 
 	/**
@@ -461,12 +416,12 @@ public class StreamUtils {
 	 * @param filePath
 	 * @param str
 	 * @param charset
-	 * @return
+	 * @throws IOException
 	 */
-	public static boolean appendFileFromString(String filePath, String str, String charset) {
+	public static void appendFileFromString(String filePath, String str, String charset) throws IOException {
 
 		File file = new File(filePath);
-		return appendFileFromString(file, str, charset);
+		appendFileFromString(file, str, charset);
 	}
 
 	/**
@@ -474,9 +429,9 @@ public class StreamUtils {
 	 * 
 	 * @param file
 	 * @param obj
-	 * @return
+	 * @throws IOException
 	 */
-	public static boolean writeObject(File file, Object obj) {
+	public static void writeObject(File file, Object obj) throws IOException {
 
 		FileOutputStream fos = null;
 		ObjectOutputStream oos = null;
@@ -485,9 +440,6 @@ public class StreamUtils {
 			oos = new ObjectOutputStream(fos);
 			oos.writeObject(obj);
 			oos.reset();
-			return true;
-		} catch (Exception e) {
-			throw new RuntimeException(e);
 		} finally {
 			if (oos != null) {
 				try {
@@ -511,12 +463,12 @@ public class StreamUtils {
 	 * 
 	 * @param filePath
 	 * @param obj
-	 * @return
+	 * @throws IOException
 	 */
-	public static boolean writeObject(String filePath, Object obj) {
+	public static void writeObject(String filePath, Object obj) throws IOException {
 
 		File file = new File(filePath);
-		return writeObject(file, obj);
+		writeObject(file, obj);
 	}
 
 	/**

@@ -10,6 +10,7 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Random;
 
 /**
  * 简易的 Http 请求工具类。
@@ -83,7 +84,7 @@ public class HttpUtils {
 					}
 				}
 			}
-		} catch (IOException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
 			if (in != null) {
@@ -136,9 +137,8 @@ public class HttpUtils {
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 
 		try {
-			if (toStream(url, out)) {
-				bytes = out.toByteArray();
-			}
+			toStream(url, out);
+			bytes = out.toByteArray();
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -172,14 +172,21 @@ public class HttpUtils {
 	 */
 	public static File getFile(URL url, String filePath) {
 
+		File oldFile = null;
+
 		File file = new File(filePath);
 
-		File parentFile = file.getParentFile();
-		if (!parentFile.exists()) {
-			parentFile.mkdirs();
+		if (file.exists()) {
+			oldFile = new File(filePath + System.currentTimeMillis() + new Random().nextInt());
+			file.renameTo(oldFile);
+		} else {
+			File parentFile = file.getParentFile();
+			if (!parentFile.exists()) {
+				parentFile.mkdirs();
+			}
 		}
 
-		boolean existFlag = file.exists() ? true : false; // 文件是否已存在
+		boolean error = false;
 
 		FileOutputStream fos = null;
 		BufferedOutputStream bos = null;
@@ -187,14 +194,10 @@ public class HttpUtils {
 		try {
 			fos = new FileOutputStream(file);
 			bos = new BufferedOutputStream(fos);
-			if (toStream(url, bos)) {
-				return file;
-			} else {
-				if (!existFlag) {
-					file.delete(); // 异常的情况下如果该文件原先不存在的则删除之
-				}
-			}
+			toStream(url, bos);
+			return file;
 		} catch (Exception e) {
+			error = true;
 			e.printStackTrace();
 		} finally {
 			if (bos != null) {
@@ -202,6 +205,15 @@ public class HttpUtils {
 					bos.close();
 				} catch (IOException e) {
 					e.printStackTrace();
+				} finally {
+					// 异常的情况下如果该文件原先已存在的则保留原文件，不存在的则删除已生成的文件
+					if (error) {
+						if (file.delete() && oldFile != null) {
+							oldFile.renameTo(file);
+						}
+					} else if (oldFile != null) {
+						oldFile.delete();
+					}
 				}
 			}
 		}
@@ -226,9 +238,9 @@ public class HttpUtils {
 	 * 
 	 * @param url
 	 * @param out
-	 * @return
+	 * @throws IOException
 	 */
-	public static boolean toStream(URL url, OutputStream out) {
+	public static void toStream(URL url, OutputStream out) throws Exception {
 
 		HttpURLConnection conn = null;
 		InputStream in = null;
@@ -242,11 +254,9 @@ public class HttpUtils {
 
 			if (conn.getResponseCode() == 200) {
 				in = conn.getInputStream();
-				return convertStream(in, out);
+				convertStream(in, out);
 			}
 
-		} catch (IOException e) {
-			e.printStackTrace();
 		} finally {
 			if (in != null) {
 				try {
@@ -259,8 +269,6 @@ public class HttpUtils {
 				conn.disconnect();
 			}
 		}
-
-		return false;
 	}
 
 	/**
@@ -268,11 +276,11 @@ public class HttpUtils {
 	 * 
 	 * @param urlStr
 	 * @param out
-	 * @return
+	 * @throws IOException
 	 */
-	public static boolean toStream(String urlStr, OutputStream out) {
+	public static void toStream(String urlStr, OutputStream out) throws Exception {
 
-		return toStream(getURL(urlStr), out);
+		toStream(getURL(urlStr), out);
 	}
 
 	/**
@@ -280,62 +288,50 @@ public class HttpUtils {
 	 * 
 	 * @param in
 	 * @param out
-	 * @return
+	 * @throws IOException
 	 */
-	private static boolean convertStream(InputStream in, OutputStream out) {
+	private static void convertStream(InputStream in, OutputStream out) throws IOException {
 
-		if (in != null && out != null) {
-			byte[] buffer = new byte[1024 * 4];
-			int len = 0;
-			try {
-				while ((len = in.read(buffer)) != -1) {
-					out.write(buffer, 0, len);
-				}
-				return true;
-			} catch (Exception e) {
-				throw new RuntimeException(e);
-			}
-		} else {
-			return false;
+		byte[] buffer = new byte[1024 * 4];
+		int len = 0;
+		while ((len = in.read(buffer)) != -1) {
+			out.write(buffer, 0, len);
 		}
 
 	}
 
-	private static byte[] streamToBytes(InputStream in) {
+	private static byte[] streamToBytes(InputStream in) throws IOException {
 
-		byte[] result = null;
+		if (in == null) {
+			return null;
+		}
+
 		ByteArrayOutputStream out = null;
 
-		if (in != null) {
-			try {
+		try {
 
-				// 当从网络URL中获取输入流时不能使用 in.available()
-				// result = new byte[in.available()];
-				// in.read(result);
+			// 当从网络URL中获取输入流时不能使用 in.available()
+			// result = new byte[in.available()];
+			// in.read(result);
 
-				out = new ByteArrayOutputStream();
-				byte[] buffer = new byte[1024 * 4];
-				int len = 0;
-				while ((len = in.read(buffer)) != -1) {
-					out.write(buffer, 0, len);
-				}
+			out = new ByteArrayOutputStream();
+			byte[] buffer = new byte[1024 * 4];
+			int len = 0;
+			while ((len = in.read(buffer)) != -1) {
+				out.write(buffer, 0, len);
+			}
 
-				result = out.toByteArray();
+			return out.toByteArray();
 
-			} catch (Exception e) {
-				throw new RuntimeException(e);
-			} finally {
-				if (out != null) {
-					try {
-						out.close();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
+		} finally {
+			if (out != null) {
+				try {
+					out.close();
+				} catch (IOException e) {
+					e.printStackTrace();
 				}
 			}
 		}
-
-		return result;
 	}
 
 	private static URL getURL(String urlStr) {
