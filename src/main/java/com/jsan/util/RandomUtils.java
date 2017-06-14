@@ -4,14 +4,13 @@ import java.nio.ByteBuffer;
 import java.util.Random;
 import java.util.UUID;
 
-import sun.misc.BASE64Encoder;
+import javax.xml.bind.DatatypeConverter;
 
 /**
  * 随机数生成工具类。
  *
  */
 
-@SuppressWarnings("restriction")
 public class RandomUtils {
 
 	public static final String NUMBER_STRING = "0123456789";
@@ -277,7 +276,7 @@ public class RandomUtils {
 
 		String str = parseCurrentTimeMillisToSequenceCode();
 
-		while (str.contains("/") || str.contains("+")) {
+		while (str.indexOf('/') > -1 || str.indexOf('+') > -1) {
 			str = parseCurrentTimeMillisToSequenceCode();
 		}
 		if (length > 11) {
@@ -299,28 +298,26 @@ public class RandomUtils {
 		int i = getInt(1, 999999);
 		l *= i;
 		byte[] buffer = parseLongToByte(l);
-		String str = parseBase64EncodeWithoutSymbol(buffer);
+		String str = parseBase64EncodeWithoutEqualsSign(buffer);
 
 		return str;
 	}
 
 	/**
-	 * 将 byte[] 进行 Base64 编码，并去除换行符（\r\n）和填补符号（=）。
+	 * 将 byte[] 进行 Base64 编码，并去除填补符号（=）。
 	 * 
 	 * @param bytes
 	 * @return
 	 */
-	private static String parseBase64EncodeWithoutSymbol(byte[] bytes) {
+	private static String parseBase64EncodeWithoutEqualsSign(byte[] bytes) {
 
 		String str = null;
 
 		if (bytes != null) {
-			try {
-				BASE64Encoder encoder = new BASE64Encoder();
-				str = encoder.encode(bytes);
-				str = str.replaceAll("\r|\n|=", "");
-			} catch (Exception e) {
-				throw new RuntimeException(e);
+			str = DatatypeConverter.printBase64Binary(bytes);
+			int index = str.indexOf('=');
+			if (index > -1) {
+				str = str.substring(0, index);
 			}
 		}
 

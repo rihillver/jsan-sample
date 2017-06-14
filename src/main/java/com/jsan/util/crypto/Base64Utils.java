@@ -1,211 +1,176 @@
 package com.jsan.util.crypto;
 
-import sun.misc.BASE64Decoder;
-import sun.misc.BASE64Encoder;
+import java.io.IOException;
 
-@SuppressWarnings("restriction")
+/**
+ * Base64 工具类。
+ * <p>
+ * 
+ * 另可参：<br>
+ * javax.xml.bind.DatatypeConverter.class <br>
+ * Java 8 （java.util.Base64.class） <br>
+ * Apache Commons Codec （Base64.class） <br>
+ * Google Guava （BaseEncoding.class）<br>
+ * MiGBase64 （Base64.class）
+ *
+ */
+
 public class Base64Utils {
 
 	/**
-	 * Base64 编码。
+	 * Base64 编码（指定选项）。
 	 * 
-	 * @param bytes
+	 * @param source
+	 * @param options
 	 * @return
 	 */
-	public static String encode(byte[] bytes) {
+	public static String encode(byte[] source, int options) {
 
-		String str = null;
-
-		if (bytes != null) {
-			try {
-				BASE64Encoder encoder = new BASE64Encoder();
-				str = encoder.encode(bytes);
-			} catch (Exception e) {
-				// logging
-				e.printStackTrace();
-			}
+		try {
+			return Base64.encodeBytes(source, options);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
 		}
-
-		return str;
 	}
 
 	/**
 	 * Base64 编码。
 	 * 
-	 * @param str
+	 * @param source
 	 * @return
 	 */
-	public static String encode(String str) {
+	public static String encode(byte[] source) {
 
-		if (str != null) {
-			str = encode(str.getBytes());
-		}
-
-		return str;
+		return encode(source, Base64.NO_OPTIONS);
 	}
 
 	/**
-	 * Base64 编码，去除换行符（\r\n）。
+	 * Base64 编码。
 	 * 
-	 * @param str
+	 * @param source
 	 * @return
 	 */
-	public static String encodeWithoutWrap(byte[] bytes) {
+	public static String encode(String source) {
 
-		String str = encode(bytes);
-
-		if (str != null) {
-			str = str.replaceAll("\r|\n", "");
-		}
-
-		return str;
+		return encode(source.getBytes(), Base64.NO_OPTIONS);
 	}
 
 	/**
-	 * Base64 编码，去除换行符（\r\n）。
+	 * Base64 编码（URL 模式，将 "+" 替换成 "-" 、 "/" 替换成 "_"、去除 "="）。
 	 * 
-	 * @param str
+	 * @param source
 	 * @return
 	 */
-	public static String encodeWithoutWrap(String str) {
+	public static String encodeUrlSafe(byte[] source) {
 
-		if (str != null) {
-			str = encodeWithoutWrap(str.getBytes());
-		}
-
-		return str;
+		return removeEqualsSign(encode(source, Base64.URL_SAFE));
 	}
 
 	/**
-	 * Base64 编码，去除换行符（\r\n）和填补符号（=）。
+	 * Base64 编码（URL 模式，将 "+" 替换成 "-" 、 "/" 替换成 "_"、去除 "="）。
 	 * 
-	 * @param str
+	 * @param source
 	 * @return
 	 */
-	public static String encodeWithoutSymbol(byte[] bytes) {
+	public static String encodeUrlSafe(String source) {
 
-		String str = encode(bytes);
-
-		if (str != null) {
-			str = str.replaceAll("\r|\n|=", "");
-		}
-
-		return str;
+		return removeEqualsSign(encode(source.getBytes(), Base64.URL_SAFE));
 	}
 
 	/**
-	 * Base64 编码，去除换行符（\r\n）和填补符号（=）。
+	 * Base64 解码（指定选项）。
 	 * 
-	 * @param str
+	 * @param source
+	 * @param options
 	 * @return
 	 */
-	public static String encodeWithoutSymbol(String str) {
+	public static byte[] decode(String source, int options) {
 
-		if (str != null) {
-			str = encodeWithoutSymbol(str.getBytes());
+		try {
+			return Base64.decode(source, options);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
 		}
-
-		return str;
 	}
 
 	/**
-	 * Base64 编码（URL 模式），去除换行符（\r\n）和填补符号（=），并将 "+" 替换成 "-" 、 "/" 替换成 "_" 。
+	 * Base64 解码。
 	 * 
-	 * @param str
+	 * @param source
 	 * @return
 	 */
-	public static String encodeForURL(byte[] bytes) {
+	public static byte[] decodeToByte(String source) {
 
-		String str = encodeWithoutSymbol(bytes);
-
-		if (str != null) {
-			str = str.replaceAll("\\+", "-");
-			str = str.replaceAll("/", "_");
-		}
-
-		return str;
+		return decode(source, Base64.NO_OPTIONS);
 	}
 
 	/**
-	 * Base64 编码（URL 模式），去除换行符（\r\n）和填补符号（=），并将 "+" 替换成 "-" 、 "/" 替换成 "_" 。
+	 * Base64 解码。
 	 * 
-	 * @param str
+	 * @param source
 	 * @return
 	 */
-	public static String encodeForURL(String str) {
+	public static String decodeToString(String source) {
 
-		if (str != null) {
-			str = encodeForURL(str.getBytes());
-		}
-
-		return str;
+		return new String(decode(source, Base64.NO_OPTIONS));
 	}
 
 	/**
-	 * Base64 解码，对于长度不足 4 倍数的加上填补符号（=）补足后再进行解码。
+	 * Base64 解码（URL 模式，将 "+" 替换成 "-" 、 "/" 替换成 "_"、去除 "="）。
 	 * 
-	 * @param str
+	 * @param source
 	 * @return
 	 */
-	public static byte[] decode(String str) {
+	public static byte[] decodeUrlSafeToByte(String source) {
 
-		byte[] buff = null;
-
-		if (str != null) {
-
-			int length = str.replaceAll("\r|\n", "").length() % 4;
-
-			if (length == 2) {
-				str += "==";
-			}
-			if (length == 3) {
-				str += "=";
-			}
-
-			try {
-				BASE64Decoder decoder = new BASE64Decoder();
-				buff = decoder.decodeBuffer(str);
-			} catch (Exception e) {
-				// logging
-				e.printStackTrace();
-			}
-		}
-
-		return buff;
+		return decode(paddingEqualsSign(source), Base64.URL_SAFE);
 	}
 
 	/**
-	 * Base64 解码，对于长度不足 4 倍数的加上填补符号（=）补足后再进行解码。
+	 * Base64 解码（URL 模式，将 "+" 替换成 "-" 、 "/" 替换成 "_"、去除 "="）。
 	 * 
-	 * @param str
+	 * @param source
 	 * @return
 	 */
-	public static String decodeToString(String str) {
+	public static String decodeUrlSafeToString(String source) {
 
-		byte[] buff = decode(str);
-
-		if (buff != null) {
-			str = new String(buff);
-		}
-
-		return str;
+		return new String(decode(paddingEqualsSign(source), Base64.URL_SAFE));
 	}
 
 	/**
-	 * Base64 解码（URL 模式）。
+	 * 根据情况填补尾部的等号。
+	 * <p>
+	 * 如果长度不是 4 的倍数的情况则加上填补符号（=）。
 	 * 
-	 * @param str
+	 * @param source
 	 * @return
 	 */
-	public static String decodeToStringForURL(String str) {
+	public static String paddingEqualsSign(String source) {
 
-		if (str != null) {
-			str = str.replace('-', '+');
-			str = str.replace('_', '/');
-			str = decodeToString(str);
+		int len = source.length() % 4;
+
+		if (len == 2) {
+			source += "==";
+		} else if (len == 3) {
+			source += "=";
 		}
 
-		return str;
+		return source;
 	}
 
+	/**
+	 * 根据情况移除尾部的等号。
+	 * 
+	 * @param source
+	 * @return
+	 */
+	public static String removeEqualsSign(String source) {
+
+		int index = source.indexOf('=');
+		if (index > -1) {
+			return source.substring(0, index);
+		}
+
+		return source;
+	}
 }

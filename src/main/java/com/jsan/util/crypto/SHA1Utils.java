@@ -8,10 +8,14 @@ import java.security.MessageDigest;
 
 /**
  * SHA1 散列算法工具类。
+ * <p>
+ * 更专业的可参 Bouncy Castle。
  *
  */
 
 public class SHA1Utils {
+
+	private static final String ALGORITHM = "SHA-1";
 
 	/**
 	 * 返回 SHA1 散列码。
@@ -21,21 +25,14 @@ public class SHA1Utils {
 	 */
 	public static String encrypt(byte[] bytes) {
 
-		String str = null;
-
-		if (bytes != null) {
-			try {
-				MessageDigest messageDigest = MessageDigest.getInstance("SHA-1");
-				messageDigest.update(bytes);
-				byte[] buff = messageDigest.digest();
-				str = parseByteToHexString(buff);
-			} catch (Exception e) {
-				// logging
-				e.printStackTrace();
-			}
+		try {
+			MessageDigest messageDigest = MessageDigest.getInstance(ALGORITHM);
+			messageDigest.update(bytes);
+			byte[] buff = messageDigest.digest();
+			return parseByteToHexString(buff);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
 		}
-
-		return str;
 	}
 
 	/**
@@ -46,11 +43,7 @@ public class SHA1Utils {
 	 */
 	public static String encrypt(String str) {
 
-		if (str != null) {
-			str = encrypt(str.getBytes());
-		}
-
-		return str;
+		return encrypt(str.getBytes());
 	}
 
 	/**
@@ -73,36 +66,27 @@ public class SHA1Utils {
 	 */
 	public static String encryptByFile(File file) {
 
-		String str = null;
-
-		InputStream inputStream = null;
+		InputStream in = null;
 		try {
-			inputStream = new FileInputStream(file);
+			MessageDigest digest = MessageDigest.getInstance(ALGORITHM);
+			in = new FileInputStream(file);
 			byte[] buffer = new byte[1024 * 4];
-
-			MessageDigest messageDigest = MessageDigest.getInstance("SHA-1");
-
-			while (inputStream.read(buffer) != -1) {
-				messageDigest.update(buffer);
+			while (in.read(buffer) != -1) {
+				digest.update(buffer);
 			}
-
-			byte[] buff = messageDigest.digest();
-			str = parseByteToHexString(buff);
+			byte[] buff = digest.digest();
+			return parseByteToHexString(buff);
 		} catch (Exception e) {
-			// logging
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		} finally {
-			if (inputStream != null) {
+			if (in != null) {
 				try {
-					inputStream.close();
+					in.close();
 				} catch (IOException e) {
-					// logging
 					e.printStackTrace();
 				}
 			}
 		}
-
-		return str;
 	}
 
 	/**

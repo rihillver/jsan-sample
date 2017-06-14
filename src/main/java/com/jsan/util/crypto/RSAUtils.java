@@ -18,10 +18,9 @@ import javax.crypto.Cipher;
 //import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 /**
- * RSA 加密工具类。<br>
- * <br>
- * 
- * 注：更全面的实现建议使用 Bouncy Castle 加密组件。
+ * RSA 加密工具类。
+ * <p>
+ * 更专业的可参 Bouncy Castle。
  *
  */
 
@@ -44,19 +43,15 @@ public class RSAUtils {
 	 */
 	public static KeyPair generateKeyPair() {
 
-		KeyPair keyPair = null;
-
 		try {
 			KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance(KEY_ALGORITHM);
 			// KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance(KEY_ALGORITHM, BOUNCY_CASTLE_PROVIDER);
+			
 			keyPairGenerator.initialize(KEY_SIZE);
-			keyPair = keyPairGenerator.generateKeyPair();
+			return keyPairGenerator.generateKeyPair();
 		} catch (Exception e) {
-			// logging...
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
-
-		return keyPair;
 	}
 
 	/**
@@ -95,9 +90,7 @@ public class RSAUtils {
 			RSAPublicKeySpec keySpec = new RSAPublicKeySpec(modulus, exponent);
 			return (RSAPublicKey) keyFactory.generatePublic(keySpec);
 		} catch (Exception e) {
-			// logging...
-			e.printStackTrace();
-			return null;
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -115,9 +108,7 @@ public class RSAUtils {
 			RSAPrivateKeySpec keySpec = new RSAPrivateKeySpec(modulus, exponent);
 			return (RSAPrivateKey) keyFactory.generatePrivate(keySpec);
 		} catch (Exception e) {
-			// logging...
-			e.printStackTrace();
-			return null;
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -130,22 +121,17 @@ public class RSAUtils {
 	 */
 	public static byte[] encryptByPublicKey(PublicKey publicKey, byte[] content) {
 
-		if (content != null) {
-			try {
-				Cipher cipher = Cipher.getInstance(KEY_ALGORITHM);
-				// Cipher cipher = Cipher.getInstance(KEY_ALGORITHM, BOUNCY_CASTLE_PROVIDER);
-				cipher.init(Cipher.ENCRYPT_MODE, publicKey);
-				// content = cipher.doFinal(content);
+		try {
+			Cipher cipher = Cipher.getInstance(KEY_ALGORITHM);
+			// Cipher cipher = Cipher.getInstance(KEY_ALGORITHM, BOUNCY_CASTLE_PROVIDER);
+			cipher.init(Cipher.ENCRYPT_MODE, publicKey);
+			// content = cipher.doFinal(content);
 
-				content = getContentForHandleBlock(cipher, content, MAX_ENCRYPT_BLOCK);
+			return getContentForHandleBlock(cipher, content, MAX_ENCRYPT_BLOCK);
 
-			} catch (Exception e) {
-				// logging...
-				e.printStackTrace();
-			}
+		} catch (Exception e) {
+			throw new RuntimeException(e);
 		}
-
-		return content;
 	}
 
 	/**
@@ -157,22 +143,17 @@ public class RSAUtils {
 	 */
 	public static byte[] encryptByPrivateKey(PrivateKey privateKey, byte[] content) {
 
-		if (content != null) {
-			try {
-				Cipher cipher = Cipher.getInstance(KEY_ALGORITHM);
-				// Cipher cipher = Cipher.getInstance(KEY_ALGORITHM, BOUNCY_CASTLE_PROVIDER);
-				cipher.init(Cipher.ENCRYPT_MODE, privateKey);
-				// content = cipher.doFinal(content);
+		try {
+			Cipher cipher = Cipher.getInstance(KEY_ALGORITHM);
+			// Cipher cipher = Cipher.getInstance(KEY_ALGORITHM, BOUNCY_CASTLE_PROVIDER);
+			cipher.init(Cipher.ENCRYPT_MODE, privateKey);
+			// content = cipher.doFinal(content);
 
-				content = getContentForHandleBlock(cipher, content, MAX_ENCRYPT_BLOCK);
+			return getContentForHandleBlock(cipher, content, MAX_ENCRYPT_BLOCK);
 
-			} catch (Exception e) {
-				// logging...
-				e.printStackTrace();
-			}
+		} catch (Exception e) {
+			throw new RuntimeException(e);
 		}
-
-		return content;
 	}
 
 	/**
@@ -184,23 +165,18 @@ public class RSAUtils {
 	 */
 	public static byte[] decryptByPublicKey(PublicKey publicKey, byte[] content) {
 
-		if (content != null) {
-			try {
-				Cipher cipher = Cipher.getInstance(KEY_ALGORITHM);
-				// Cipher cipher = Cipher.getInstance(KEY_ALGORITHM, BOUNCY_CASTLE_PROVIDER);
-				// Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding", BOUNCY_CASTLE_PROVIDER);
-				cipher.init(Cipher.DECRYPT_MODE, publicKey);
-				// content = cipher.doFinal(content);
+		try {
+			Cipher cipher = Cipher.getInstance(KEY_ALGORITHM);
+			// Cipher cipher = Cipher.getInstance(KEY_ALGORITHM, BOUNCY_CASTLE_PROVIDER);
+			// Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding", BOUNCY_CASTLE_PROVIDER);
+			cipher.init(Cipher.DECRYPT_MODE, publicKey);
+			// content = cipher.doFinal(content);
 
-				content = getContentForHandleBlock(cipher, content, MAX_DECRYPT_BLOCK);
+			return getContentForHandleBlock(cipher, content, MAX_DECRYPT_BLOCK);
 
-			} catch (Exception e) {
-				// logging...
-				e.printStackTrace();
-			}
+		} catch (Exception e) {
+			throw new RuntimeException(e);
 		}
-
-		return content;
 	}
 
 	/**
@@ -212,23 +188,18 @@ public class RSAUtils {
 	 */
 	public static byte[] decryptByPrivateKey(PrivateKey privateKey, byte[] content) {
 
-		if (content != null) {
-			try {
-				Cipher cipher = Cipher.getInstance(KEY_ALGORITHM);
-				// Cipher cipher = Cipher.getInstance(KEY_ALGORITHM, BOUNCY_CASTLE_PROVIDER);
-				// Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding", BOUNCY_CASTLE_PROVIDER);
-				cipher.init(Cipher.DECRYPT_MODE, privateKey);
-				// content = cipher.doFinal(content);
+		try {
+			Cipher cipher = Cipher.getInstance(KEY_ALGORITHM);
+			// Cipher cipher = Cipher.getInstance(KEY_ALGORITHM, BOUNCY_CASTLE_PROVIDER);
+			// Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding", BOUNCY_CASTLE_PROVIDER);
+			cipher.init(Cipher.DECRYPT_MODE, privateKey);
+			// content = cipher.doFinal(content);
 
-				content = getContentForHandleBlock(cipher, content, MAX_DECRYPT_BLOCK);
+			return getContentForHandleBlock(cipher, content, MAX_DECRYPT_BLOCK);
 
-			} catch (Exception e) {
-				// logging...
-				e.printStackTrace();
-			}
+		} catch (Exception e) {
+			throw new RuntimeException(e);
 		}
-
-		return content;
 	}
 
 	/**
@@ -312,56 +283,5 @@ public class RSAUtils {
 
 		return result;
 	}
-
-	/*
-	public static void main(String[] args) {
-
-		long l = System.currentTimeMillis();
-
-		String text = "分隔封天印地儿童味儿替换要u影让他也让他儿童儿童儿童如图一天雨规划染发 儿童歌而风格染发膏恶搞儿童个过户的的法规和";
-
-		System.out.println("明文大小：" + text.getBytes().length);
-
-		KeyPair keyPair = generateKeyPair();
-
-		byte[] content = text.getBytes();
-
-		byte[] encryptContent = encryptByPublicKey(keyPair.getPublic(), content);
-
-		System.out.println("加密耗时：" + (System.currentTimeMillis() - l));
-
-		l = System.currentTimeMillis();
-
-		//System.out.println("加密：" + new String(encryptContent));
-		System.out.println("加密：" + parseByteToHexString(encryptContent));
-
-		System.out.println("密文大小：" + encryptContent.length);
-
-		
-		// 通过私钥的模和指数生成私钥
-		BigInteger modulus = getPrivateKey(keyPair).getModulus();
-		BigInteger exponent = getPrivateKey(keyPair).getPrivateExponent();
-
-		RSAPrivateKey privateKey = getPrivateKey(modulus, exponent);
-
-		byte[] result = decryptByPrivateKey(privateKey, encryptContent);
-		
-		
-		// byte[] result = decryptByPrivateKey(keyPair.getPrivate(), encryptContent);
-
-		System.out.println("解密：" + new String(result));
-
-		System.out.println("解密耗时：" + (System.currentTimeMillis() - l));
-
-		byte[] pk = getPublicKey(keyPair).getEncoded();
-
-		System.out.println("公钥(Base64)：" + Base64Util.encodeWithoutWrap(pk));
-		System.out.println("公钥(十六进制)：" + parseByteToHexString(pk));
-
-		System.out.println("公钥模：" + getPublicKey(keyPair).getModulus().toString(16));
-		System.out.println("公钥指数：" + getPublicKey(keyPair).getPublicExponent().toString(16));
-
-	}
-	*/
 
 }

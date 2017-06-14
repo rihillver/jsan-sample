@@ -9,6 +9,8 @@ import javax.crypto.spec.SecretKeySpec;
 
 /**
  * AES 加密工具类。
+ * <p>
+ * 更专业的可参 Bouncy Castle。
  *
  */
 
@@ -23,11 +25,11 @@ public class AESUtils {
 	 * @param password
 	 * @return
 	 */
-	public static byte[] encrypt(byte[] content, String password) {
+	public static byte[] encrypt(byte[] content, byte[] password) {
 
 		try {
 			KeyGenerator keyGenerator = KeyGenerator.getInstance(ALGORITHM);
-			keyGenerator.init(128, new SecureRandom(password.getBytes()));
+			keyGenerator.init(128, new SecureRandom(password));
 			SecretKey secretKey = keyGenerator.generateKey();
 			byte[] encoded = secretKey.getEncoded();
 			SecretKeySpec secretKeySpec = new SecretKeySpec(encoded, ALGORITHM);
@@ -37,6 +39,18 @@ public class AESUtils {
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	/**
+	 * 加密。
+	 * 
+	 * @param content
+	 * @param password
+	 * @return
+	 */
+	public static byte[] encrypt(byte[] content, String password) {
+
+		return encrypt(content, password.getBytes());
 	}
 
 	/**
@@ -64,11 +78,11 @@ public class AESUtils {
 	 * @param password
 	 * @return
 	 */
-	public static byte[] decrypt(byte[] content, String password) {
+	public static byte[] decrypt(byte[] content, byte[] password) {
 
 		try {
 			KeyGenerator keyGenerator = KeyGenerator.getInstance(ALGORITHM);
-			keyGenerator.init(128, new SecureRandom(password.getBytes()));
+			keyGenerator.init(128, new SecureRandom(password));
 			SecretKey secretKey = keyGenerator.generateKey();
 			byte[] encoded = secretKey.getEncoded();
 			SecretKeySpec secretKeySpec = new SecretKeySpec(encoded, ALGORITHM);
@@ -78,6 +92,18 @@ public class AESUtils {
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	/**
+	 * 解密。
+	 * 
+	 * @param content
+	 * @param password
+	 * @return
+	 */
+	public static byte[] decrypt(byte[] content, String password) {
+
+		return decrypt(content, password.getBytes());
 	}
 
 	/**
