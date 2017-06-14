@@ -3,15 +3,16 @@ package com.jsan.util.crypto;
 import java.io.IOException;
 
 /**
- * Base64 工具类。
+ * Base64 工具类（基于 net.iharder.Base64）。
  * <p>
  * 
  * 另可参：<br>
- * javax.xml.bind.DatatypeConverter.class <br>
+ * （javax.xml.bind.DatatypeConverter.class） <br>
  * Java 8 （java.util.Base64.class） <br>
  * Apache Commons Codec （Base64.class） <br>
- * Google Guava （BaseEncoding.class）<br>
- * MiGBase64 （Base64.class）
+ * Google Guava （BaseEncoding.class） <br>
+ * MiGBase64 （Base64.class） <br>
+ * Bouncy Castle （Base64.class）
  *
  */
 
