@@ -26,9 +26,9 @@ public class SHA1Utils {
 	public static String encrypt(byte[] bytes) {
 
 		try {
-			MessageDigest messageDigest = MessageDigest.getInstance(ALGORITHM);
-			messageDigest.update(bytes);
-			byte[] buff = messageDigest.digest();
+			MessageDigest digest = MessageDigest.getInstance(ALGORITHM);
+			digest.update(bytes);
+			byte[] buff = digest.digest();
 			return parseByteToHexString(buff);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
