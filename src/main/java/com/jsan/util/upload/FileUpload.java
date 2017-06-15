@@ -135,7 +135,7 @@ public class FileUpload {
 		}
 		servletFileUpload.setFileItemFactory(fileItemFactory);
 
-		List<FileItem> lists = servletFileUpload.parseRequest(request);
+		List<FileItem> lists = servletFileUpload.parseRequest(request); // parseRequest(request) 方法必须确保 fileItemFactory 不为 null
 
 		if (lists == null) {
 			return 0;
