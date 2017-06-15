@@ -1,5 +1,6 @@
 package com.jsan.util.fileupload;
 
+import java.io.File;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -11,11 +12,11 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 
 public class FileUpload extends AbstractUpload {
 
+	private FileItemFactory fileItemFactory;
+
 	public FileUpload(HttpServletRequest request) {
 		super(request);
 	}
-
-	private FileItemFactory fileItemFactory;
 
 	@Override
 	protected int executeUpload(ServletFileUpload upload) throws Exception {
@@ -42,8 +43,11 @@ public class FileUpload extends AbstractUpload {
 		for (FileItem item : list) {
 
 			if (item.isFormField()) {
+				
+				String key = item.getFieldName();
 				String value = characterEncoding == null ? item.getString() : item.getString(characterEncoding);
-				handleFormField(item.getFieldName(), value);
+				handleFormField(key, value);
+				
 			} else {
 
 				if (fileMax > 0 && fileCount >= fileMax) { // 判断最多上传文件数量
@@ -58,7 +62,49 @@ public class FileUpload extends AbstractUpload {
 					continue;
 				}
 				
+				String primitiveName = UploadUtils.extractFileName(item.getName());
 				
+				String fileType = UploadUtils.extractFileType(primitiveName).toLowerCase();
+				
+				if (allowFileTypes != null && !allowFileTypes.contains(fileType)) { // 判断文件类型
+					continue;
+				}
+				
+				String primitiveNameWithoutExt = UploadUtils.extractFileNameWithoutExt(primitiveName);
+				
+				String fieldName = item.getFieldName();
+				
+				String fileNameWithoutExt = handleFileName(fieldName, primitiveNameWithoutExt, fileType, fileCount);
+				
+				String fileName = fileNameWithoutExt + fileType;
+				
+				
+				File file = new File(destPath, fileName);
+				
+				item.write(file);
+				
+				FileInfo info = new FileInfo();
+				
+				info.setPrimitiveName(primitiveName);
+
+				info.setName(fileName);
+				info.setNameWithoutExt(fileNameWithoutExt);
+				info.setPath(file.getCanonicalPath());
+
+				info.setSavePath(savePath);
+				info.setSaveDirectory(saveDirectory);;
+
+				info.setFieldName(fieldName);
+				info.setContentType(item.getContentType());
+				info.setType(fileType);;
+
+				info.setSize(item.getSize());
+				
+				fileInfoList.add(info);
+				
+				if (!item.isInMemory()) {
+					item.delete(); // 删除临时文件
+				}
 
 				fileCount++;
 			}
@@ -66,5 +112,19 @@ public class FileUpload extends AbstractUpload {
 
 		return fileCount;
 	}
+	
+	protected String handleFileName(String fieldName, String primitiveNameWithoutExt, String fileType, int fileCount) {
+
+		if (fileNames != null || namingAdapter != null) { // 重命名
+			if (fileNames != null) {
+				return fileNames[fileCount];
+			} else {
+				return namingAdapter.getName(fieldName, primitiveNameWithoutExt, fileCount);
+			}
+		}
+
+		return primitiveNameWithoutExt;
+	}
+	
 
 }

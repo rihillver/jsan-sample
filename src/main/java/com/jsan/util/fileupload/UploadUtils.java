@@ -235,9 +235,50 @@ public class UploadUtils {
 	
 	// =================================================================
 	
-	public static String getWebRootPath(){
-		
+	public static String getWebRootPath() {
+
 		return null;
 	}
 
+	public static String extractFileName(String path) {
+
+		int index = path.lastIndexOf('/');
+		if (index > -1) {
+			path = path.substring(index+1);
+		}
+
+		index = path.lastIndexOf('\\');
+		if (index > -1) {
+			path = path.substring(index+1);
+		}
+		
+		return path;
+	}
+
+	public static String extractFileNameWithoutExt(String fileName) {
+		
+		int index = fileName.lastIndexOf('.');
+		if (index > -1) {
+			return fileName.substring(0, index);
+		} else {
+			return "";
+		}
+	}
+
+	public static String extractFileType(String fileName) {
+
+		int index = fileName.lastIndexOf('.');
+		if (index > -1) {
+			return fileName.substring(index);
+		} else {
+			return "";
+		}
+	}
+	
+	public static void main(String[] args) {
+		
+		String str = "d:/adafasd/sdfsdf\\\\sdfjsdfsd.exe";
+		
+		System.out.println(extractFileType(str));
+	}
 }

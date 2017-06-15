@@ -3,6 +3,7 @@ package com.jsan.util.fileupload;
 import java.io.File;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -22,7 +23,7 @@ public abstract class AbstractUpload {
 	protected String characterEncoding; // 字符编码，获取表单文本域时用
 	protected int fileMax; // 最大上传文件数
 	protected boolean allowEmptyFile; // 是否允许上传空文件
-	protected Set<String> allowTypes; // 允许上传的文件类型，例如.jpg、.rar等，""表示无扩展名的文件
+	protected Set<String> allowFileTypes; // 允许上传的文件类型，例如.jpg、.rar等，""表示无扩展名的文件
 	protected String savePath; // 保存路径，默认Web根目录
 	protected String saveDirectory; // 保存目录，相对于savePath下的目录
 	protected String[] fileNames;
@@ -31,6 +32,7 @@ public abstract class AbstractUpload {
 
 	protected String destPath;
 	protected NamingAdapter namingAdapter;
+	protected List<FileInfo> fileInfoList;
 	protected Map<String, String[]> parameterMap;
 
 	// ----------------------
@@ -77,7 +79,7 @@ public abstract class AbstractUpload {
 	protected void handleFormField(String key, String value) {
 
 		if (parameterMap == null) {
-			parameterMap = new LinkedHashMap<>();
+			parameterMap = new LinkedHashMap<String,String[]>();
 		}
 
 		if (parameterMap.containsKey(key)) {
