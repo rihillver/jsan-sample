@@ -19,7 +19,7 @@ import java.util.regex.Pattern;
 
 public class FileUtils {
 
-	private static final int DEFAULT_BUFFER_SIZE = 1024 * 4; // 默认缓冲区大小
+	private static final int DEFAULT_BUFFER_SIZE = 1024 * 8; // 默认缓冲区大小
 
 	/**
 	 * 创建文件。

@@ -158,13 +158,13 @@ public class UploadUtils {
 	 */
 	public static ServletFileUpload getServletFileUpload(long fileSizeMax, long sizeMax, String headerEncoding, FileItemFactory fileItemFactory) {
 
-		ServletFileUpload servletFileUpload = new ServletFileUpload();
-		servletFileUpload.setFileItemFactory(fileItemFactory);
-		servletFileUpload.setHeaderEncoding(headerEncoding);
-		servletFileUpload.setFileSizeMax(fileSizeMax);
-		servletFileUpload.setSizeMax(sizeMax);
+		ServletFileUpload upload = new ServletFileUpload();
+		upload.setFileItemFactory(fileItemFactory);
+		upload.setHeaderEncoding(headerEncoding);
+		upload.setFileSizeMax(fileSizeMax);
+		upload.setSizeMax(sizeMax);
 
-		return servletFileUpload;
+		return upload;
 	}
 
 	

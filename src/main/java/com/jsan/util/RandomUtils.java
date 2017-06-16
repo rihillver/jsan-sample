@@ -247,7 +247,7 @@ public class RandomUtils {
 	}
 
 	/**
-	 * 返回 UUID 随机数。
+	 * 返回 UUID 随机字符串。
 	 * 
 	 * @return
 	 */
@@ -257,11 +257,11 @@ public class RandomUtils {
 	}
 
 	/**
-	 * 返回 UUID 随机数，并去除符号（-）。
+	 * 返回 UUID 随机数字符串，并去除中横杆符号（-）。
 	 * 
 	 * @return
 	 */
-	public static String getUUIDWithoutSymbol() {
+	public static String getUUIDUnsigned() {
 
 		return getUUID().replaceAll("-", "");
 	}

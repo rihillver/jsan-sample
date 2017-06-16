@@ -3,16 +3,16 @@ package com.jsan.util.fileupload;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class DateTimeNamingAdapter implements NamingAdapter {
+public class TimestampNamingAdapter implements NamingAdapter {
 
 	private SimpleDateFormat sdf = null;
 
-	public DateTimeNamingAdapter() {
+	public TimestampNamingAdapter() {
 
 		sdf = new SimpleDateFormat("yyyyMMddHHmmssS");
 	}
 
-	public DateTimeNamingAdapter(String pattern) {
+	public TimestampNamingAdapter(String pattern) {
 
 		sdf = new SimpleDateFormat(pattern);
 	}

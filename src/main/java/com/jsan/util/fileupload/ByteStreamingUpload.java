@@ -9,6 +9,8 @@ import javax.servlet.http.HttpServletRequest;
 
 public class ByteStreamingUpload extends AbstractStreamingUpload {
 
+	protected static final int DEFAULT_BUFFER_SIZE = 1024 * 8; // 默认缓冲区大小
+
 	public ByteStreamingUpload(HttpServletRequest request) {
 		super(request);
 	}
@@ -22,7 +24,7 @@ public class ByteStreamingUpload extends AbstractStreamingUpload {
 			out = new ByteArrayOutputStream();
 			long fileSize = 0;
 
-			byte[] buf = new byte[1024 * 4];
+			byte[] buf = new byte[DEFAULT_BUFFER_SIZE];
 			int len;
 			while ((len = in.read(buf)) != -1) {
 				out.write(buf, 0, len);
