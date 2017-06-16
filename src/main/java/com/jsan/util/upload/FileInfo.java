@@ -8,8 +8,8 @@ public class FileInfo {
 
 	private String name;
 	private String nameWithoutExt;
+	
 	private String path;
-
 	private String savePath;
 	private String saveDirectory;
 
