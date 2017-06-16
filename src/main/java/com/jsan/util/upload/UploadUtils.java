@@ -1,6 +1,8 @@
-package com.jsan.util.upload;
+package com.jsan.util.fileupload;
 
 import java.io.File;
+import java.io.IOException;
+import java.net.URL;
 
 import javax.servlet.ServletContext;
 
@@ -11,12 +13,7 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.FileCleaningTracker;
 
 /**
- * 使用 Apache Commons FileUpload 组件上传文件的工具类。 <br>
- * <br>
- * 
- * 依赖： <br>
- * 1、commons-fileupload-1.3.1.jar <br>
- * 2、common-io.jar
+ * 文件上传工具类（基于 Apache Commons FileUpload）。
  *
  */
 
@@ -27,9 +24,14 @@ public class UploadUtils {
 	 * 
 	 * @return
 	 */
-	public static DiskFileItemFactory getDiskFileItemFactory() {
+	public static DiskFileItemFactory getFileItemFactory() {
 
-		return getDiskFileItemFactory(-1, null);
+		return getFileItemFactory(-1, (File)null);
+	}
+
+	public static DiskFileItemFactory getFileItemFactory(int sizeThreshold, String repositoryPath) {
+		
+		return getFileItemFactory(sizeThreshold, repositoryPath, null);
 	}
 
 	/**
@@ -41,9 +43,14 @@ public class UploadUtils {
 	 *            临时文件夹
 	 * @return
 	 */
-	public static DiskFileItemFactory getDiskFileItemFactory(int sizeThreshold, File repository) {
+	public static DiskFileItemFactory getFileItemFactory(int sizeThreshold, File repository) {
 
-		return getDiskFileItemFactory(sizeThreshold, repository, null);
+		return getFileItemFactory(sizeThreshold, repository, null);
+	}
+
+	public static DiskFileItemFactory getFileItemFactory(int sizeThreshold, String repositoryPath, ServletContext context) {
+		
+		return getFileItemFactory(sizeThreshold, new File(repositoryPath), context);
 	}
 
 	/**
@@ -57,26 +64,29 @@ public class UploadUtils {
 	 *            Servlet 上下文
 	 * @return
 	 */
-	public static DiskFileItemFactory getDiskFileItemFactory(int sizeThreshold, File repository, ServletContext context) {
+	public static DiskFileItemFactory getFileItemFactory(int sizeThreshold, File repository, ServletContext context) {
 
-		DiskFileItemFactory diskFileItemFactory = new DiskFileItemFactory();
+		DiskFileItemFactory factory = new DiskFileItemFactory();
 
-		if (sizeThreshold > 0) {
-			diskFileItemFactory.setSizeThreshold(sizeThreshold); // DiskFileItemFactory.DEFAULT_SIZE_THRESHOLD = 10240 （未设置时的默认值）
+		if (sizeThreshold > -1) {
+			factory.setSizeThreshold(sizeThreshold); // DiskFileItemFactory.DEFAULT_SIZE_THRESHOLD = 10240 （未设置时的默认值）
 		}
 
 		if (repository != null) {
-			diskFileItemFactory.setRepository(repository); // System.getProperty("java.io.tmpdir") （未设置时默认值）
+			if(!repository.exists()){
+				repository.mkdirs();
+			}
+			factory.setRepository(repository); // new File(System.getProperty("java.io.tmpdir")) （未设置时默认值）
 		}
 
 		if (context != null) {
 			FileCleaningTracker fileCleaningTracker = FileCleanerCleanup.getFileCleaningTracker(context);
-			diskFileItemFactory.setFileCleaningTracker(fileCleaningTracker);
+			factory.setFileCleaningTracker(fileCleaningTracker);
 		}
 
-		return diskFileItemFactory;
+		return factory;
 	}
-
+	
 	/**
 	 * 返回 ServletFileUpload 实例。 <br>
 	 * 
@@ -148,76 +158,72 @@ public class UploadUtils {
 	 */
 	public static ServletFileUpload getServletFileUpload(long fileSizeMax, long sizeMax, String headerEncoding, FileItemFactory fileItemFactory) {
 
-		ServletFileUpload servletFileUpload = new ServletFileUpload();
-		servletFileUpload.setFileItemFactory(fileItemFactory);
-		servletFileUpload.setHeaderEncoding(headerEncoding);
-		servletFileUpload.setFileSizeMax(fileSizeMax);
-		servletFileUpload.setSizeMax(sizeMax);
+		ServletFileUpload upload = new ServletFileUpload();
+		upload.setFileItemFactory(fileItemFactory);
+		upload.setHeaderEncoding(headerEncoding);
+		upload.setFileSizeMax(fileSizeMax);
+		upload.setSizeMax(sizeMax);
 
-		return servletFileUpload;
+		return upload;
 	}
 
-	/**
-	 * 返回文件全名（通过文件路径提取文件全名）。
-	 * 
-	 * @param path
-	 * @return
-	 */
-	public static String handleFileFullName(String path) {
+	
+	// =================================================================
 
-		String str = null;
-		if (path != null) {
-			str = path.replaceAll(".*[/|\\\\]", "");
+	public static String getWebRootPath() {
+
+		URL url = Object.class.getResource("/");
+		File file = new File(url.getPath());
+		try {
+			return file.getParentFile().getParentFile().getCanonicalPath();
+		} catch (IOException e) {
+			throw new RuntimeException(e);
 		}
-		return str;
 	}
 
-	/**
-	 * 返回文件全名（通过文件全名提取不含扩展名的文件名）。
-	 * 
-	 * @param fileName
-	 * @return
-	 */
-	public static String handleFileName(String fileName) {
+	public static String extractFileName(String path) {
 
-		String str = null;
-		if (fileName != null && fileName.contains(".")) {
-			str = fileName.substring(0, fileName.lastIndexOf('.'));
+		int index = path.lastIndexOf('/');
+		if (index > -1) {
+			path = path.substring(index + 1);
 		}
-		return str;
+
+		index = path.lastIndexOf('\\');
+		if (index > -1) {
+			path = path.substring(index + 1);
+		}
+
+		return path;
 	}
 
-	/**
-	 * 返回文件类型（通过文件全名提取文件类型，及文件后缀，若无文件后缀则返回 ""）。
-	 * 
-	 * @param sourceFileName
-	 * @return
-	 */
-	public static String handleFileType(String sourceFileName) {
+	public static String extractFileNameWithoutExt(String fileName) {
 
-		if (sourceFileName != null && sourceFileName.contains(".")) {
-			return sourceFileName.replaceAll(".*\\.", "");
+		int index = fileName.lastIndexOf('.');
+		if (index > -1) {
+			return fileName.substring(0, index);
 		} else {
 			return "";
 		}
 	}
 
-	/**
-	 * 返回经过转换成小写后的文件类型数组。
-	 * 
-	 * @param fileType
-	 * @return
-	 */
-	public static String[] handleFileTypeToLowerCase(String[] fileType) {
+	public static String extractFileType(String fileName) {
 
-		if (fileType == null) {
-			return null;
+		int index = fileName.lastIndexOf('.');
+		if (index > -1) {
+			return fileName.substring(index + 1);
 		} else {
-			for (int i = 0; i < fileType.length; i++) {
-				fileType[i] = fileType[i].toLowerCase(); // 转小写
-			}
-			return fileType;
+			return "";
 		}
 	}
 
+	public static void main(String[] args) {
+		
+		String str = "d:/adafasd/sdfsdf\\\\sdfjsdfsd.exe";
+
+		System.out.println(extractFileName(str));
+		System.out.println(extractFileNameWithoutExt(str));
+		System.out.println(extractFileType(str));
+		
+		System.out.println(getWebRootPath());
+	}
 }
