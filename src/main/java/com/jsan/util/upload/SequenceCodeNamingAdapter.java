@@ -1,4 +1,4 @@
-package com.jsan.util.fileupload;
+package com.jsan.util.upload;
 
 import java.nio.ByteBuffer;
 import java.util.Random;

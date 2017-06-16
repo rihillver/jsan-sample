@@ -1,4 +1,4 @@
-package com.jsan.util.upload;
+package com.sample.util.discard.upload;
 
 import java.io.File;
 

@@ -1,4 +1,4 @@
-package com.jsan.util.upload;
+package com.sample.util.discard.upload;
 
 /**
  * 上传文件信息 Bean 。

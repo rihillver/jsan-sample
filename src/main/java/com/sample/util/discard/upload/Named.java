@@ -1,4 +1,4 @@
-package com.jsan.util.upload;
+package com.sample.util.discard.upload;
 
 /**
  * 上传文件命名接口（通过实现该接口自定义上传文件命名）。

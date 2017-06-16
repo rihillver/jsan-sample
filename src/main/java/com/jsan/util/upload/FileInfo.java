@@ -1,4 +1,4 @@
-package com.jsan.util.fileupload;
+package com.jsan.util.upload;
 
 import java.util.Arrays;
 

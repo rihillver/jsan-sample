@@ -2,7 +2,7 @@ package com.test;
 
 import java.io.IOException;
 
-import com.jsan.util.fileupload.SequenceCodeNamingAdapter;
+import com.jsan.util.upload.SequenceCodeNamingAdapter;
 
 public class TempTest {
 
