@@ -1,5 +1,12 @@
 package com.jsan.util.upload;
 
+/**
+ * 上传文件命名适配器接口。
+ * <p>
+ * 应确保实现类在单例下线程安全。
+ *
+ */
+
 public interface NamingAdapter {
 
 	/**

@@ -3,6 +3,13 @@ package com.jsan.util.upload;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+/**
+ * 根据时间戳命名。
+ * <p>
+ * 默认格式为 "yyyyMMddHHmmssS" 。
+ *
+ */
+
 public class TimestampNamingAdapter implements NamingAdapter {
 
 	private SimpleDateFormat sdf = null;

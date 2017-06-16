@@ -21,7 +21,7 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
  * <br>
  * 
  * 参数： <br>
- * fileItemFactory ： FileItemFactory 实例（设置内存缓冲大小及临时文件夹等） <br>
+ * fileItemFactory ： FileItemFactory 实例（设置内存缓冲区大小及临时文件夹路径等） <br>
  * headerEncoding ： 请求头字符编码，用于解决文件名乱码问题（默认 null） <br>
  * fileSizeMax ： 单个上传文件的最大尺寸限制（默认 0，即无限制） <br>
  * sizeMax ： 整个请求上传数据的最大尺寸限制（含文本表单数据）（默认 0，即无限制） <br>

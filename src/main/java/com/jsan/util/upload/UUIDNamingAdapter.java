@@ -2,6 +2,11 @@ package com.jsan.util.upload;
 
 import java.util.UUID;
 
+/**
+ * 根据 UUID 字符串命名。
+ *
+ */
+
 public class UUIDNamingAdapter implements NamingAdapter {
 
 	private boolean unsigned;

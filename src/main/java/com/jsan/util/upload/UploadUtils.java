@@ -20,22 +20,31 @@ import org.apache.commons.io.FileCleaningTracker;
 public class UploadUtils {
 
 	/**
-	 * 返回 getDiskFileItemFactory 实例。
+	 * 返回 DiskFileItemFactory 实例。
 	 * 
 	 * @return
 	 */
 	public static DiskFileItemFactory getFileItemFactory() {
 
-		return getFileItemFactory(-1, (File)null);
+		return getFileItemFactory(-1, (File) null);
 	}
 
+	/**
+	 * 返回 DiskFileItemFactory 实例。
+	 * 
+	 * @param sizeThreshold
+	 *            内存缓冲区大小（Byte）
+	 * @param repositoryPath
+	 *            临时文件夹路径
+	 * @return
+	 */
 	public static DiskFileItemFactory getFileItemFactory(int sizeThreshold, String repositoryPath) {
-		
+
 		return getFileItemFactory(sizeThreshold, repositoryPath, null);
 	}
 
 	/**
-	 * 返回 getDiskFileItemFactory 实例。
+	 * 返回 DiskFileItemFactory 实例。
 	 * 
 	 * @param sizeThreshold
 	 *            内存缓冲区大小（Byte）
@@ -48,20 +57,34 @@ public class UploadUtils {
 		return getFileItemFactory(sizeThreshold, repository, null);
 	}
 
-	public static DiskFileItemFactory getFileItemFactory(int sizeThreshold, String repositoryPath, ServletContext context) {
-		
+	/**
+	 * 返回 DiskFileItemFactory 实例。
+	 * 
+	 * @param sizeThreshold
+	 *            内存缓冲区大小（Byte）
+	 * @param repositoryPath
+	 *            临时文件夹路径
+	 * @param context
+	 * @return
+	 */
+	public static DiskFileItemFactory getFileItemFactory(int sizeThreshold, String repositoryPath,
+			ServletContext context) {
+
 		return getFileItemFactory(sizeThreshold, new File(repositoryPath), context);
 	}
 
 	/**
-	 * 返回 getDiskFileItemFactory 实例（如果设置了 ServletContext ，则将自动清除临时文件，建议在文件处理完的时候调用 FileItem 的 delete() 方法能更及时删除临时文件，并可忽略自动清除临时文件的设置）。
+	 * 返回 DiskFileItemFactory 实例。
+	 * <p>
+	 * 如果设置了 ServletContext ，则将自动清除临时文件，建议在文件处理完的时候调用 FileItem 的 delete()
+	 * 方法能更及时删除临时文件，并可忽略自动清除临时文件的设置。
 	 * 
 	 * @param sizeThreshold
-	 *            内存缓冲值（Byte）
+	 *            内存缓冲区大小（Byte）
 	 * @param repository
 	 *            临时文件夹
 	 * @param context
-	 *            Servlet 上下文
+	 *            Servlet上下文
 	 * @return
 	 */
 	public static DiskFileItemFactory getFileItemFactory(int sizeThreshold, File repository, ServletContext context) {
@@ -69,30 +92,30 @@ public class UploadUtils {
 		DiskFileItemFactory factory = new DiskFileItemFactory();
 
 		if (sizeThreshold > -1) {
-			factory.setSizeThreshold(sizeThreshold); // DiskFileItemFactory.DEFAULT_SIZE_THRESHOLD = 10240 （未设置时的默认值）
+
+			// DiskFileItemFactory.DEFAULT_SIZE_THRESHOLD = 10240 （未设置时的默认值）
+			factory.setSizeThreshold(sizeThreshold);
 		}
 
 		if (repository != null) {
-			if(!repository.exists()){
+			if (!repository.exists()) {
 				repository.mkdirs();
 			}
-			factory.setRepository(repository); // new File(System.getProperty("java.io.tmpdir")) （未设置时默认值）
+
+			// new File(System.getProperty("java.io.tmpdir")) （未设置时默认值）
+			factory.setRepository(repository);
 		}
 
 		if (context != null) {
-			FileCleaningTracker fileCleaningTracker = FileCleanerCleanup.getFileCleaningTracker(context);
-			factory.setFileCleaningTracker(fileCleaningTracker);
+			FileCleaningTracker tracker = FileCleanerCleanup.getFileCleaningTracker(context);
+			factory.setFileCleaningTracker(tracker);
 		}
 
 		return factory;
 	}
-	
+
 	/**
-	 * 返回 ServletFileUpload 实例。 <br>
-	 * 
-	 * 注： <br>
-	 * 1、如果设置了单个文件大小限制，那么任意一个文件超过此大小，则整个请求都将抛出异常上传失败 <br>
-	 * 2、如果设置了整个请求上传数据限制，那么总上传数据（含文本表单数据）超过此大小，则整个请求都将抛出异常上传失败
+	 * 返回 ServletFileUpload 实例。
 	 * 
 	 * @return
 	 */
@@ -102,16 +125,12 @@ public class UploadUtils {
 	}
 
 	/**
-	 * 返回 ServletFileUpload 实例。 <br>
-	 * 
-	 * 注： <br>
-	 * 1、如果设置了单个文件大小限制，那么任意一个文件超过此大小，则整个请求都将抛出异常上传失败 <br>
-	 * 2、如果设置了整个请求上传数据限制，那么总上传数据（含文本表单数据）超过此大小，则整个请求都将抛出异常上传失败
+	 * 返回 ServletFileUpload 实例。
 	 * 
 	 * @param fileSizeMax
-	 *            单个上传文件的最大尺寸限制
+	 *            单个上传文件的大小限制
 	 * @param sizeMax
-	 *            整个请求上传数据的最大尺寸限制（含文本表单数据）
+	 *            整个请求上传数据的大小限制（含文本表单数据）
 	 * @return
 	 */
 	public static ServletFileUpload getServletFileUpload(long fileSizeMax, long sizeMax) {
@@ -120,16 +139,12 @@ public class UploadUtils {
 	}
 
 	/**
-	 * 返回 ServletFileUpload 实例。 <br>
-	 * 
-	 * 注： <br>
-	 * 1、如果设置了单个文件大小限制，那么任意一个文件超过此大小，则整个请求都将抛出异常上传失败 <br>
-	 * 2、如果设置了整个请求上传数据限制，那么总上传数据（含文本表单数据）超过此大小，则整个请求都将抛出异常上传失败
+	 * 返回 ServletFileUpload 实例。
 	 * 
 	 * @param fileSizeMax
-	 *            单个上传文件的最大尺寸限制
+	 *            单个上传文件的大小限制
 	 * @param sizeMax
-	 *            整个请求上传数据的最大尺寸限制（含文本表单数据）
+	 *            整个请求上传数据的大小限制（含文本表单数据）
 	 * @param headerEncoding
 	 *            请求头字符编码
 	 * @return
@@ -140,23 +155,20 @@ public class UploadUtils {
 	}
 
 	/**
-	 * 返回 ServletFileUpload 实例。 <br>
-	 * 
-	 * 注： <br>
-	 * 1、如果设置了单个文件大小限制，那么任意一个文件超过此大小，则整个请求都将抛出异常上传失败 <br>
-	 * 2、如果设置了整个请求上传数据限制，那么总上传数据（含文本表单数据）超过此大小，则整个请求都将抛出异常上传失败
+	 * 返回 ServletFileUpload 实例。
 	 * 
 	 * @param fileSizeMax
-	 *            单个上传文件的最大尺寸限制
+	 *            单个上传文件的大小限制
 	 * @param sizeMax
-	 *            整个请求上传数据的最大尺寸限制（含文本表单数据）
+	 *            整个请求上传数据的大小限制（含文本表单数据）
 	 * @param headerEncoding
 	 *            请求头字符编码
 	 * @param fileItemFactory
 	 *            FileItemFactory 实例
 	 * @return
 	 */
-	public static ServletFileUpload getServletFileUpload(long fileSizeMax, long sizeMax, String headerEncoding, FileItemFactory fileItemFactory) {
+	public static ServletFileUpload getServletFileUpload(long fileSizeMax, long sizeMax, String headerEncoding,
+			FileItemFactory fileItemFactory) {
 
 		ServletFileUpload upload = new ServletFileUpload();
 		upload.setFileItemFactory(fileItemFactory);
@@ -167,9 +179,13 @@ public class UploadUtils {
 		return upload;
 	}
 
-	
 	// =================================================================
 
+	/**
+	 * 返回 Web 应用根路径。
+	 * 
+	 * @return
+	 */
 	public static String getWebRootPath() {
 
 		URL url = Object.class.getResource("/");
@@ -181,6 +197,12 @@ public class UploadUtils {
 		}
 	}
 
+	/**
+	 * 从文件路径中提取文件吗。
+	 * 
+	 * @param path
+	 * @return
+	 */
 	public static String extractFileName(String path) {
 
 		int index = path.lastIndexOf('/');
@@ -196,6 +218,12 @@ public class UploadUtils {
 		return path;
 	}
 
+	/**
+	 * 从文件名中提取不含扩展名的文件名。
+	 * 
+	 * @param fileName
+	 * @return
+	 */
 	public static String extractFileNameWithoutExt(String fileName) {
 
 		int index = fileName.lastIndexOf('.');
@@ -206,6 +234,12 @@ public class UploadUtils {
 		}
 	}
 
+	/**
+	 * 提取文件类型（文件扩展名）。
+	 * 
+	 * @param fileName
+	 * @return
+	 */
 	public static String extractFileType(String fileName) {
 
 		int index = fileName.lastIndexOf('.');
@@ -216,14 +250,4 @@ public class UploadUtils {
 		}
 	}
 
-	public static void main(String[] args) {
-		
-		String str = "d:/adafasd/sdfsdf\\\\sdfjsdfsd.exe";
-
-		System.out.println(extractFileName(str));
-		System.out.println(extractFileNameWithoutExt(str));
-		System.out.println(extractFileType(str));
-		
-		System.out.println(getWebRootPath());
-	}
 }

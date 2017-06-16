@@ -5,6 +5,13 @@ import java.util.Random;
 
 import javax.xml.bind.DatatypeConverter;
 
+/**
+ * 根据由大小写英文、数字组成的随机序列码命名（基本不重复）。
+ * <p>
+ * 默认长度为 11，指定长度时应大于 11。
+ *
+ */
+
 public class SequenceCodeNamingAdapter implements NamingAdapter {
 
 	private int length;
