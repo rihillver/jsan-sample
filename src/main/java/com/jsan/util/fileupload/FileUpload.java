@@ -50,7 +50,7 @@ public class FileUpload extends AbstractUpload {
 				
 			} else {
 
-				if (fileMax > 0 && fileCount >= fileMax) { // 判断最多上传文件数量
+				if (fileMax > -1 && fileCount >= fileMax) { // 判断最多上传文件数量
 					continue;
 				}
 
@@ -70,35 +70,41 @@ public class FileUpload extends AbstractUpload {
 					continue;
 				}
 				
+				if (isFileExtToUppercase()) { // 文件扩展名是否转为大写
+					fileType = fileType.toUpperCase();
+				}
+				
 				String primitiveNameWithoutExt = UploadUtils.extractFileNameWithoutExt(primitiveName);
 				
 				String fieldName = item.getFieldName();
 				
-				String fileNameWithoutExt = handleFileName(fieldName, primitiveNameWithoutExt, fileType, fileCount);
+				String fileNameWithoutExt = handleFileName(fieldName, primitiveNameWithoutExt, fileCount);
 				
-				String fileName = fileNameWithoutExt + fileType;
+				String fileName = fileType.isEmpty() ? fileNameWithoutExt : fileNameWithoutExt + "." + fileType;
 				
 				
 				File file = new File(destPath, fileName);
+				
+				String filePath = file.getCanonicalPath();
+				
+				String fileContentType = item.getContentType();
+				
+				long fileSize = item.getSize();
 				
 				item.write(file);
 				
 				FileInfo info = new FileInfo();
 				
 				info.setPrimitiveName(primitiveName);
-
 				info.setName(fileName);
 				info.setNameWithoutExt(fileNameWithoutExt);
-				info.setPath(file.getCanonicalPath());
-
+				info.setPath(filePath);
 				info.setSavePath(savePath);
-				info.setSaveDirectory(saveDirectory);;
-
+				info.setSaveDirectory(saveDirectory);
 				info.setFieldName(fieldName);
-				info.setContentType(item.getContentType());
-				info.setType(fileType);;
-
-				info.setSize(item.getSize());
+				info.setContentType(fileContentType);
+				info.setType(fileType);
+				info.setSize(fileSize);
 				
 				fileInfoList.add(info);
 				
@@ -112,18 +118,13 @@ public class FileUpload extends AbstractUpload {
 
 		return fileCount;
 	}
-	
-	protected String handleFileName(String fieldName, String primitiveNameWithoutExt, String fileType, int fileCount) {
 
-		if (fileNames != null || namingAdapter != null) { // 重命名
-			if (fileNames != null) {
-				return fileNames[fileCount];
-			} else {
-				return namingAdapter.getName(fieldName, primitiveNameWithoutExt, fileCount);
-			}
-		}
+	public FileItemFactory getFileItemFactory() {
+		return fileItemFactory;
+	}
 
-		return primitiveNameWithoutExt;
+	public void setFileItemFactory(FileItemFactory fileItemFactory) {
+		this.fileItemFactory = fileItemFactory;
 	}
 	
 

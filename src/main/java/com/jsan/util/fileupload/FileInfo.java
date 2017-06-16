@@ -23,6 +23,8 @@ public class FileInfo {
 	private int width;
 	private int height;
 
+	private String describe;
+
 	public String getPrimitiveName() {
 		return primitiveName;
 	}
@@ -127,12 +129,20 @@ public class FileInfo {
 		this.height = height;
 	}
 
+	public String getDescribe() {
+		return describe;
+	}
+
+	public void setDescribe(String describe) {
+		this.describe = describe;
+	}
+
 	@Override
 	public String toString() {
 		return "FileInfo [primitiveName=" + primitiveName + ", name=" + name + ", nameWithoutExt=" + nameWithoutExt
 				+ ", path=" + path + ", savePath=" + savePath + ", saveDirectory=" + saveDirectory + ", fieldName="
 				+ fieldName + ", contentType=" + contentType + ", type=" + type + ", size=" + size + ", bytes="
-				+ Arrays.toString(bytes) + ", width=" + width + ", height=" + height + "]";
+				+ Arrays.toString(bytes) + ", width=" + width + ", height=" + height + ", describe=" + describe + "]";
 	}
 
 }

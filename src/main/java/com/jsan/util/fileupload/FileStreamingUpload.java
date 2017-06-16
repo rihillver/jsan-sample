@@ -1,25 +1,28 @@
 package com.jsan.util.fileupload;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 
 import javax.servlet.http.HttpServletRequest;
 
-public class ByteStreamingUpload extends AbstractStreamingUpload {
+public class FileStreamingUpload extends AbstractStreamingUpload {
 
-	public ByteStreamingUpload(HttpServletRequest request) {
+	public FileStreamingUpload(HttpServletRequest request) {
 		super(request);
 	}
 
 	@Override
 	protected void handleItemStream(InputStream in, File file, FileInfo info) throws Exception {
 
-		ByteArrayOutputStream out = null;
+		OutputStream out = null;
 
 		try {
-			out = new ByteArrayOutputStream();
+
+			out = new FileOutputStream(file);
+
 			long fileSize = 0;
 
 			byte[] buf = new byte[1024 * 4];
@@ -30,7 +33,6 @@ public class ByteStreamingUpload extends AbstractStreamingUpload {
 			}
 
 			info.setSize(fileSize);
-			info.setBytes(out.toByteArray());
 
 		} finally {
 			if (out != null) {
