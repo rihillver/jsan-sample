@@ -96,7 +96,7 @@ public class Im4javaUtils extends HttpServlet {
 	private static Properties getProperties() {
 
 		Properties properties = null;
-		InputStream inputStream = Object.class.getResourceAsStream(DEFAULT_CONFIG_FILE);
+		InputStream inputStream = Im4javaUtils.class.getResourceAsStream(DEFAULT_CONFIG_FILE);
 
 		if (inputStream != null) {
 			properties = new Properties();

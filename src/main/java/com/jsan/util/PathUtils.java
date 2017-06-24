@@ -11,7 +11,7 @@ import java.net.URL;
 
 public class PathUtils {
 
-	private static final URL url = Object.class.getResource("/");
+	private static final URL url = PathUtils.class.getResource("/");
 
 	/**
 	 * 返回 Web 根目录路径。

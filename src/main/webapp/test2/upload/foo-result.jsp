@@ -1,7 +1,7 @@
 <%@page import="java.util.Date"%>
 <%@page language="java" contentType="text/html; charset=UTF-8"%>
 <%
-	//System.out.println(new Date());
+	
 %>
 <!DOCTYPE html>
 <html lang="zh-CN">
@@ -13,12 +13,14 @@
 </head>
 
 <body>
-	<center>
-	<h1>Jsan 测试样板（当前时间：<%=new Date()%>）</h1>
-	</center>
+	result:
 	<hr>
-	<ul>
-	<li><a target="_blank" href="test2/upload/list">文件上传测试</a></li>
-	</ul>
+	<h3>文本表单</h3>
+	<p>id: ${id}</p>
+	<p>name: ${name }</p>
+	<p>sex: ${sex }</p>
+	<p>address: ${address }</p>
+	
+	<h3>上传文件</h3>
 </body>
 </html>

@@ -188,7 +188,7 @@ public class UploadUtils {
 	 */
 	public static String getWebRootPath() {
 
-		URL url = Object.class.getResource("/");
+		URL url = UploadUtils.class.getResource("/");
 		File file = new File(url.getPath());
 		try {
 			return file.getParentFile().getParentFile().getCanonicalPath();
