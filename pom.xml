@@ -28,10 +28,8 @@
 			
 		<commons-math3.version>3.6.1</commons-math3.version>
 		<commons-io.version>2.5</commons-io.version>
-		<commons-codec.version>1.10</commons-codec.version>
 		<base64.version>2.3.9</base64.version>
 		<guava.version>22.0</guava.version>
-		<bctsp-jdk15on.version>1.46</bctsp-jdk15on.version>
 		
 		
 	</properties>
@@ -116,12 +114,6 @@
 	
 
 		<dependency>
-			<groupId>commons-codec</groupId>
-			<artifactId>commons-codec</artifactId>
-			<version>${commons-codec.version}</version>
-		</dependency>
-
-		<dependency>
 			<groupId>net.iharder</groupId>
 			<artifactId>base64</artifactId>
 			<version>${base64.version}</version>
@@ -132,13 +124,6 @@
 			<artifactId>guava</artifactId>
 			<version>${guava.version}</version>
 		</dependency>
-
-		<dependency>
-			<groupId>org.bouncycastle</groupId>
-			<artifactId>bctsp-jdk15on</artifactId>
-			<version>${bctsp-jdk15on.version}</version>
-		</dependency>
-
 		
 		
 		<!--
