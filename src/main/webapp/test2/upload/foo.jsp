@@ -13,7 +13,7 @@
 </head>
 
 <body>
-最多允许上传3个文件，单个文件最大2M
+${value}
 <hr>
 	<form action="" method="post" enctype="multipart/form-data">
 	<p>id:<input type="text" name="id"></p>
@@ -30,6 +30,8 @@
 	<p>file2:<input type="file" name="file2"></p>
 	<p>file3:<input type="file" name="file3"></p>
 	<p>file4:<input type="file" name="file4"></p>
+	<p>file5:<input type="file" name="file5"></p>
+	<p>file6:<input type="file" name="file6"></p>
 	<hr>
 	<p><input type="submit" value="提交"></p>
 	</form>

@@ -230,7 +230,7 @@ public class UploadUtils {
 		if (index > -1) {
 			return fileName.substring(0, index);
 		} else {
-			return "";
+			return fileName;
 		}
 	}
 

@@ -6,6 +6,9 @@ import java.net.URL;
 
 /**
  * 路径工具类。
+ * <p>
+ * 该类能够正确获取 Web 应用路径的前提是，该类应该存在于 Web 应用根目录下的 /WEB-INF/classes 内，或者在 /WEB-INF/lib
+ * 里面的 jar 包内。
  *
  */
 

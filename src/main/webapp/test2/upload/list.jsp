@@ -16,10 +16,10 @@
 	<center>文件上传测试</center>
 	<hr>
 	<ul>
-		<li><a href="foo">FileUpload模式测试</a></li>
-		<li><a href="bar">FileStreamingUpload模式测试</a></li>
-		<li><a href="baz">ByteStreamingUpload模式测试</a></li>
-		<li><a href="qux">WebImageStreamingUpload模式测试</a></li>
+		<li><a href="foo">FileUpload 测试</a></li>
+		<li><a href="bar">FileStreamingUpload 测试</a></li>
+		<li><a href="baz">ByteStreamingUpload 测试</a></li>
+		<li><a href="qux">WebImageStreamingUpload 测试</a></li>
 	</ul>
 </body>
 </html>

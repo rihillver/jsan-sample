@@ -29,18 +29,23 @@ public class WebImageStreamingUpload extends FileStreamingUpload {
 	protected void handleItemStream(InputStream in, File file, FileInfo info) throws Exception {
 
 		if (isExtractDimension()) {
-			super.handleItemStream(in, file, info);
-		} else {
 
 			BufferedImage bi = ImageIO.read(in);
 
-			info.setWidth(bi.getWidth());
-			info.setHeight(bi.getHeight());
+			try {
 
-			// info.getType()为jpg时这个格式能否，等待测试
+				info.setWidth(bi.getWidth());
+				info.setHeight(bi.getHeight());
+			} catch (Exception e) {
+				System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
+			}
+
 			ImageIO.write(bi, info.getType(), file);// 将图片保存为文件
 
 			info.setSize(file.length());
+
+		} else {
+			super.handleItemStream(in, file, info);
 		}
 
 	}
