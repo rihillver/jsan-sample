@@ -171,7 +171,9 @@ public class UploadUtils {
 			FileItemFactory fileItemFactory) {
 
 		ServletFileUpload upload = new ServletFileUpload();
-		upload.setFileItemFactory(fileItemFactory);
+		if (fileItemFactory != null) {
+			upload.setFileItemFactory(fileItemFactory);
+		}
 		upload.setHeaderEncoding(headerEncoding);
 		upload.setFileSizeMax(fileSizeMax);
 		upload.setSizeMax(sizeMax);

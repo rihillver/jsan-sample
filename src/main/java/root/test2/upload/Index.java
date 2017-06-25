@@ -17,10 +17,10 @@ import com.jsan.util.upload.ByteStreamingUpload;
 import com.jsan.util.upload.FileStreamingUpload;
 import com.jsan.util.upload.FileUpload;
 import com.jsan.util.upload.NamingAdapter;
-import com.jsan.util.upload.SequenceCodeNamingAdapter;
 import com.jsan.util.upload.UUIDNamingAdapter;
 import com.jsan.util.upload.UploadUtils;
 import com.jsan.util.upload.WebImageStreamingUpload;
+import com.jsan.util.upload.WebImageStreamingUpload.WebImageIOException;
 
 public class Index {
 
@@ -177,10 +177,6 @@ public class Index {
 		int i = 0;
 		try {
 			i = upload.executeUpload();
-		} catch (FileSizeLimitExceededException e) {
-			System.out.println("==字段名：" + e.getFieldName());
-			System.out.println("==文件名：" + e.getFileName());
-			System.out.println("==超出单个上传文件的大小限制");
 		} catch (SizeLimitExceededException e1) {
 			System.out.println("==超出整个请求上传数据的大小限制");
 		}
@@ -197,7 +193,8 @@ public class Index {
 	@Render(url = "foo")
 	public void qux(View view) {
 
-		view.addValue("WebImageStreamingUpload 测试：");
+		view.addValue(
+				"WebImageStreamingUpload 测试：最多允许上传4个文件，整个请求数据最大10M，允许上传的文件类型： jpg、jpeg、png、gif、bmp，Streaming模式下允许上传空文件（大小为0的文件）");
 	}
 
 	/**
@@ -220,23 +217,27 @@ public class Index {
 		upload.setSizeMax(1024 * 1024 * 10); // 限制整个请求10M以内
 		upload.setFileMax(4);
 
+		// 可指定文件类型，此时以指定的文件类型为准，忽略默认的 "jpg", "jpeg", "png", "gif", "bmp" 这些格式
 		// upload.setAllowFileTypes("jpg", "jpeg", "png");
-		upload.setFileExtToUppercase(true);
-		upload.setExtractDimension(true);
-		// upload.setFileNames("A","B","C","D");
-		upload.setNamingAdapter(new SequenceCodeNamingAdapter());
+
+		upload.setFileExtToUppercase(true); // 文件扩展名设置为大写
+
+		// upload.setExtractDimension(true);//extractDimension为true时对所有文件均提取图片尺寸
+		upload.setExtractDimensionTypes("jpg", "jpeg", "png"); // 仅对指定的格式提取图片尺寸，前提是extractDimension为false
+
+		upload.setFileNames("A", "B", "C", "D"); // 优先级别高于upload.setNamingAdapter()
+		// upload.setNamingAdapter(new SequenceCodeNamingAdapter());
 
 		int i = 0;
+		
 		try {
 			i = upload.executeUpload();
-		} catch (FileSizeLimitExceededException e) {
-			System.out.println("==字段名：" + e.getFieldName());
-			System.out.println("==文件名：" + e.getFileName());
-			System.out.println("==超出单个上传文件的大小限制");
 		} catch (SizeLimitExceededException e1) {
 			System.out.println("==超出整个请求上传数据的大小限制");
-		} catch (Exception e2) {
-			System.out.println("==不合格的图片文件");
+		} catch (WebImageIOException e2) {
+			System.out.println("==字段名：" + e2.getFieldName());
+			System.out.println("==文件名：" + e2.getFileName());
+			System.out.println("==非规范的图片文件");
 		}
 
 		view.add("success", i);
