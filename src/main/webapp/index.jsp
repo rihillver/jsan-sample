@@ -18,7 +18,13 @@
 	</center>
 	<hr>
 	<ul>
+	<li><a target="_blank" href="test2/form/list">表单转换测试</a></li>
+	<li><a target="_blank" href="test2/json/list">JSON测试</a></li>
 	<li><a target="_blank" href="test2/upload/list">文件上传测试</a></li>
+	<li><a target="_blank" href="test2/download/list">文件下载测试</a></li>
+	<li><a target="_blank" href="test2/download/list">文件下载测试</a></li>
+	<li><a target="_blank" href="test2/cache/list">View缓存测试</a></li>
+	<li><a target="_blank" href="test/curd/list">CURD测试</a></li>
 	</ul>
 </body>
 </html>

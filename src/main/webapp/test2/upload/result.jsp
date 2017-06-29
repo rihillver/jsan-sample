@@ -1,6 +1,5 @@
 <%@page import="java.util.List"%>
 <%@page import="com.jsan.util.upload.FileInfo"%>
-<%@page import="java.util.Date"%>
 <%@page language="java" contentType="text/html; charset=UTF-8"%>
 <%
 	List<FileInfo> list = (List<FileInfo>) request.getAttribute("fileInfoList");
@@ -15,7 +14,7 @@
 </head>
 
 <body>
-	result:
+	result
 	<hr>
 	<h3>文本表单</h3>
 	<p>id: ${id}</p>

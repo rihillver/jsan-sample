@@ -16,7 +16,7 @@
 </head>
 
 <body>
-	result:
+	result
 	<hr>
 	<h3>文本表单</h3>
 	<p>id: ${id}</p>

@@ -1,4 +1,3 @@
-<%@page import="java.util.Date"%>
 <%@page language="java" contentType="text/html; charset=UTF-8"%>
 <%
 	
@@ -16,14 +15,14 @@
 ${value}
 <hr>
 	<form action="" method="post" enctype="multipart/form-data">
-	<p>id:<input type="text" name="id"></p>
-	<p>name:<input type="text" name="name"></p>
+	<p>id:<input type="text" name="id" value="123"></p>
+	<p>name:<input type="text" name="name" value="张三"></p>
 	<p>sex:<input type="radio" name="sex" value="0">男 <input type="radio" name="sex" value="1">女</p>
 	
-	<p>address:<input type="text" name="address"></p>
-	<p>address:<input type="text" name="address"></p>
-	<p>address:<input type="text" name="address"></p>
-	<p>address:<input type="text" name="address"></p>
+	<p>address:<input type="text" name="address" value="中国"></p>
+	<p>address:<input type="text" name="address" value="北京市"></p>
+	<p>address:<input type="text" name="address" value="中南海"></p>
+	<p>address:<input type="text" name="address" value="紫光阁"></p>
 	<p>address:<input type="text" name="address"></p>
 	
 	<p>file1:<input type="file" name="file1"></p>

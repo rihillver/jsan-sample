@@ -12,13 +12,14 @@
 </head>
 
 <body>
-	<center>文件上传测试</center>
+	<center>JSON测试</center>
 	<hr>
 	<ul>
-		<li><a href="foo">FileUpload 测试</a></li>
-		<li><a href="bar">FileStreamingUpload 测试</a></li>
-		<li><a href="baz">ByteStreamingUpload 测试</a></li>
-		<li><a href="qux">WebImageStreamingUpload 测试</a></li>
+		<li><a href="one">JSON转Array、List、Set</a></li>
+		<li><a href="two">JSON转Map、Bean</a></li>
+		<li><a href="three">-- 测试</a></li>
+		<li><a href="four">-- 测试</a></li>
+		<li><a href="five">-- 测试</a></li>
 	</ul>
 </body>
 </html>
