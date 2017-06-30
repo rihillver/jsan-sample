@@ -12,7 +12,7 @@
 </head>
 
 <body>
-JSON转Array、List、Set
+JSON转数组、集合
 <hr>
 	<form action="" method="post">
 	<p>id:<input type="text" name="id" value="123"></p>

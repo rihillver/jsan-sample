@@ -15,11 +15,17 @@
 	<center>JSON测试</center>
 	<hr>
 	<ul>
-		<li><a href="one">JSON转Array、List、Set</a></li>
-		<li><a href="two">JSON转Map、Bean</a></li>
-		<li><a href="three">-- 测试</a></li>
-		<li><a href="four">-- 测试</a></li>
-		<li><a href="five">-- 测试</a></li>
+		<li><a href="one">JSON --> 数组、集合</a></li>
+		<li><a href="two">JSON --> Map</a></li>
+		<li><a href="three">JSON --> Bean</a></li>
+		<li><a href="four?type=array">array --> JSON</a></li>
+		<li><a href="four?type=list">list --> JSON</a></li>
+		<li><a href="four?type=set">set --> JSON</a></li>
+		<li><a href="four?type=collection">collection --> JSON</a></li>
+		<li><a href="five">Map --> JSON</a></li>
+		<li><a href="six">Bean --> JSON</a></li>
+		<li><a href="six">JSONP测试1</a></li>
+		<li><a href="seven">JSONP测试2</a></li>
 	</ul>
 </body>
 </html>

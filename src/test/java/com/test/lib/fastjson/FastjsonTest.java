@@ -97,7 +97,7 @@ public class FastjsonTest {
 
 			SerializerFeature.WriteEnumUsingToString, // 用枚举toString()值输出，由于枚举序列化特性WriteEnumUsingToString和WriteEnumUsingName不能共存
 
-			SerializerFeature.DisableCircularReferenceDetect, // 打开循环引用检测，消除对同一对象循环引用的问题，默认为false，JSONField(serialize=false)不循环
+			SerializerFeature.DisableCircularReferenceDetect, // 打开循环引用检测，消除对同一对象循环引用的问题，默认为false
 
 			SerializerFeature.WriteNonStringKeyAsString, // 如果key不为String则转换为String，比如Map的key为Integer
 
