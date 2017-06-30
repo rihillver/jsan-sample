@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -30,6 +31,7 @@ import com.jsan.mvc.annotation.Post;
 import com.jsan.mvc.annotation.Render;
 import com.jsan.mvc.json.AbstractJsonParserConfigurator;
 import com.jsan.mvc.json.AbstractJsonSerializeConfigurator;
+import com.jsan.mvc.json.GeneralJsonSerializeConfigurator;
 import com.jsan.mvc.json.JsonSerializeConfigurator;
 import com.jsan.mvc.resolve.Resolver;
 import com.jsan.util.DateUtils;
@@ -160,6 +162,50 @@ public class Index {
 
 	}
 
+	private static JsonSerializeConfigurator myJsonSerializeConfigurator = createMyJsonSerializeConfigurator();
+
+	private static JsonSerializeConfigurator createMyJsonSerializeConfigurator() {
+
+		GeneralJsonSerializeConfigurator configurator = new GeneralJsonSerializeConfigurator();
+		configurator.setDateFormat("yyyy年MM月dd日 HH时mm分ss秒");
+		configurator.setSerializerFeatures(SerializerFeature.PrettyFormat, SerializerFeature.WriteMapNullValue);
+
+		return configurator;
+	}
+
+	@Render(Resolver.JSON)
+	public Map<String, Object> five(View view) {
+
+		view.setJsonSerializeConfigurator(myJsonSerializeConfigurator);
+
+		Map<String, Object> map = new LinkedHashMap<>();
+		map.put("object", new School("1", "北京大学", "北大", "北京市", Grade.ONE));
+		map.put("array", new Boolean[] { true, false, null, true, true, false });
+		List<Date> list = new LinkedList<>();
+		list.add(DateUtils.getOffsetMonths(1));
+		list.add(DateUtils.getOffsetMonths(2));
+		list.add(DateUtils.getOffsetMonths(3));
+		list.add(null);
+		map.put("list", list);
+		Set<School> set = new LinkedHashSet<>();
+		set.add(new School("2", "上海大学", "上大", "上海市", Grade.ONE));
+		set.add(new School("3", "南京大学", "南大", "南京市", Grade.THREE));
+		map.put("set", set);
+		map.put("null", null);
+
+		return map;
+	}
+
+	@Render(Resolver.JSON)
+	public User six(View view) {
+
+		view.setJsonSerializeConfigurator(myJsonSerializeConfigurator);
+
+		User user = new User();
+		user.setSchool(new School("1", "北京大学", "北大", "北京市", Grade.ONE));
+		return user;
+	}
+
 	// --------------------------------------------------
 
 	public static enum Grade {
@@ -199,6 +245,7 @@ public class Index {
 			this.name = name;
 		}
 
+		@JSONField(name = "short_name") // 指定序列化的名称
 		public String getShortName() {
 			return shortName;
 		}
@@ -235,6 +282,8 @@ public class Index {
 
 		int id;
 		String name;
+
+		@JSONField(serialize = false) // 指定不序列化
 		String nickName;
 
 		@JSONField(name = "HEIGHT") // 指定序列化的名称
@@ -245,7 +294,7 @@ public class Index {
 
 		School school;
 
-		@JSONField(deserialize = false) // 指定反序列化
+		@JSONField(deserialize = false) // 指定不反序列化
 		String cellphone;
 
 		boolean sex;
