@@ -120,12 +120,16 @@ public class Index {
 
 	// --------------------------------------------------
 
+	/**
+	 * 数组、集合转 json 字符串。
+	 * 
+	 */
 	@Render(Resolver.JSON)
 	public Object four(View view, String type) {
 
 		// 设置json序列化配置器，可以通过jsanmvc.properties自定义全局配置JsonSerializeConfigurator
 		// projectJsonSerializeConfigurator设置了关闭循环引用检测的功能
-		view.setJsonSerializeConfigurator(projectJsonSerializeConfigurator);
+		view.setJsonSerializeConfigurator(testJsonSerializeConfigurator);
 
 		if (type == null) {
 			type = "";
@@ -137,7 +141,7 @@ public class Index {
 		case "list":
 			List<School> list = new ArrayList<>();
 			list.add(new School("1", "北京大学", "北大", "北京市", Grade.ONE));
-			list.add(new School("2", "上海大学", "上大", "上海市", Grade.ONE));
+			list.add(new School("2", "上海大学", "上大", "上海市", Grade.TWO));
 			list.add(new School("3", "南京大学", "南大", "南京市", Grade.THREE));
 			return list;
 		case "set":
@@ -173,10 +177,14 @@ public class Index {
 		return configurator;
 	}
 
+	/**
+	 * Map 转 json 字符串。
+	 * <p>
+	 * 这里将使用自定义的 ProjectJsonSerializeConfigurator 序列化配置器。
+	 * 
+	 */
 	@Render(Resolver.JSON)
 	public Map<String, Object> five(View view) {
-
-		view.setJsonSerializeConfigurator(myJsonSerializeConfigurator);
 
 		Map<String, Object> map = new LinkedHashMap<>();
 		map.put("object", new School("1", "北京大学", "北大", "北京市", Grade.ONE));
@@ -196,6 +204,10 @@ public class Index {
 		return map;
 	}
 
+	/**
+	 * Bean 转 json 字符串。
+	 * 
+	 */
 	@Render(Resolver.JSON)
 	public User six(View view) {
 
@@ -203,6 +215,22 @@ public class Index {
 
 		User user = new User();
 		user.setSchool(new School("1", "北京大学", "北大", "北京市", Grade.ONE));
+
+		user.setId(123);
+		user.setName("张三");
+		user.setNickName("小三");
+		user.setHeight(1.65);
+		user.setWeight(60);
+		user.setCellphone("13900005566");
+		user.setSex(true);
+		user.setAge(28);
+		user.setBirth(DateUtils.parseDate(1983, 12, 20));
+		user.setRegtime(Calendar.getInstance());
+		List<String> addresses = new LinkedList<>();
+		addresses.add("北京市");
+		addresses.add("西城区");
+		addresses.add("西土城路1号");
+		user.setAddresses(addresses);
 		return user;
 	}
 
@@ -219,6 +247,10 @@ public class Index {
 		String shortName;
 		String address;
 		Grade grade;
+
+		public School() {
+
+		}
 
 		public School(String number, String name, String shortName, String address, Grade grade) {
 			super();
@@ -452,14 +484,16 @@ public class Index {
 		}
 	}
 
-	private static JsonSerializeConfigurator projectJsonSerializeConfigurator = new Project_JsonSerializeConfigurator();
+	private static JsonSerializeConfigurator testJsonSerializeConfigurator = new Test_JsonSerializeConfigurator();
 
-	public static class Project_JsonSerializeConfigurator extends AbstractJsonSerializeConfigurator {
+	public static class Test_JsonSerializeConfigurator extends AbstractJsonSerializeConfigurator {
 
 		{
-			// 设置格式化输出（当前版本1.2.33有个Bug，格式化输出只对含有Bean对象的有效，对于不含Bean对象的单纯的数组、集合的格式化输出无效）
+			// 设置格式化输出（当前版本1.2.33有个Bug，格式化输出不稳定，部分情况无效）
 			// 设置关闭循环引用检测的功能
 			setSerializerFeatures(SerializerFeature.PrettyFormat, SerializerFeature.DisableCircularReferenceDetect);
+			// 设置日期格式
+			setDateFormat("yyyy/MM/dd HH:mm:ss.S");
 		}
 	}
 

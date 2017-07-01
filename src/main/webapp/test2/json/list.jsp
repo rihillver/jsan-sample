@@ -24,8 +24,8 @@
 		<li><a href="four?type=collection">collection --> JSON</a></li>
 		<li><a href="five">Map --> JSON</a></li>
 		<li><a href="six">Bean --> JSON</a></li>
-		<li><a href="six">JSONP测试1</a></li>
-		<li><a href="seven">JSONP测试2</a></li>
+		<li><a href="seven">JSONP测试1</a></li>
+		<li><a href="eight">JSONP测试2</a></li>
 	</ul>
 </body>
 </html>
