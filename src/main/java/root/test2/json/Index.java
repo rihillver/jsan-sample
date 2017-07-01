@@ -125,7 +125,7 @@ public class Index {
 	 * 
 	 */
 	@Render(Resolver.JSON)
-	public Object four(View view, String type) {
+	public void four(View view, String type) {
 
 		// 设置json序列化配置器，可以通过jsanmvc.properties自定义全局配置JsonSerializeConfigurator
 		// projectJsonSerializeConfigurator设置了关闭循环引用检测的功能
@@ -135,15 +135,19 @@ public class Index {
 			type = "";
 		}
 
+		Object obj;
+
 		switch (type) {
 		case "array":
-			return new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+			obj = new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+			break;
 		case "list":
 			List<School> list = new ArrayList<>();
 			list.add(new School("1", "北京大学", "北大", "北京市", Grade.ONE));
 			list.add(new School("2", "上海大学", "上大", "上海市", Grade.TWO));
 			list.add(new School("3", "南京大学", "南大", "南京市", Grade.THREE));
-			return list;
+			obj = list;
+			break;
 		case "set":
 			// 注意：下面的代码存在循环引用，使用fastjson默认将输出fastjson专有的引用表示格式
 			// 可以通过配置SerializerFeature.DisableCircularReferenceDetect关闭循环引用检测的功能
@@ -153,16 +157,21 @@ public class Index {
 				map.put(DateUtils.getOffsetDays(-RandomUtils.getInt(4)), RandomUtils.getWordChar(5));
 				set.add(map);
 			}
-			return set;
+			obj = set;
+			break;
 		case "collection":
 			Collection<double[]> collection = new HashSet<>();
 			collection.add(new double[] { 1.1, 2.2, 3.3 });
 			collection.add(new double[] { 10.01, 20.01, 30.01, 40.01 });
 			collection.add(new double[] { 10, 20, 30, 40, 50 });
-			return collection;
+			obj = collection;
+			break;
 		default:
-			return new String[] { "one", "two", "three", "four", "five" };
+			obj = new String[] { "one", "two", "three", "four", "five" };
+			break;
 		}
+
+		view.addValue(obj);
 
 	}
 
@@ -213,6 +222,11 @@ public class Index {
 
 		view.setJsonSerializeConfigurator(myJsonSerializeConfigurator);
 
+		return createUser();
+	}
+
+	private User createUser() {
+
 		User user = new User();
 		user.setSchool(new School("1", "北京大学", "北大", "北京市", Grade.ONE));
 
@@ -232,6 +246,29 @@ public class Index {
 		addresses.add("西土城路1号");
 		user.setAddresses(addresses);
 		return user;
+	}
+
+	// --------------------------------------------------
+
+	/**
+	 * jsonp 测试。
+	 * 
+	 */
+	@Render(Resolver.JSONP)
+	public User seven() {
+
+		return createUser();
+	}
+
+	/**
+	 * jsonp 测试（指定回调函数名）。
+	 * 
+	 */
+	@Render(Resolver.JSONP)
+	public User eight(View view, String callback) {
+
+		view.setJsonpCallback(callback);
+		return createUser();
 	}
 
 	// --------------------------------------------------
