@@ -13,6 +13,7 @@ import com.jsan.mvc.filter.DispatcherFilter;
 @WebFilter(
 		initParams = {
 				@WebInitParam(name = "debug", value = "true"), 
+				@WebInitParam(name = "cacheable", value = "true"), 
 				@WebInitParam(name = "viewPath", value = ""), // 此处强烈建议设置
 				@WebInitParam(name = "executeTime", value = "etime"), 
 				@WebInitParam(name = "mappingSuffix", value = ",.html"),

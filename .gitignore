@@ -4,6 +4,6 @@
 /.classpath
 
 *.class
-*.rar
-*.jar
+#*.rar
+#*.jar
 *.war
