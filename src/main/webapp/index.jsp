@@ -18,12 +18,19 @@
 	</center>
 	<hr>
 	<ul>
+	<li><a target="_blank" href="test0/mapping/list">请求映射测试（StandardMappingAdapter）参数方法键为“mod”</a></li>
+	<li><a target="_blank" href="test1/mapping/list">请求映射测试（StandardMappingAdapter）方法分隔符为“-”</a></li>
+	<li><a target="_blank" href="test2/mapping/list">请求映射测试（SimpleRestMappingAdapter）</a></li>
+	<li><a target="_blank" href="test3/mapping/list">请求映射测试（StrictSimpleRestMappingAdapter）</a></li>
+	<li></li>
 	<li><a target="_blank" href="test2/form/list">表单转换测试</a></li>
 	<li><a target="_blank" href="test2/json/list">JSON测试</a></li>
-	<li><a target="_blank" href="test2/upload/list">文件上传测试</a></li>
-	<li><a target="_blank" href="test2/download/list">文件下载测试</a></li>
 	<li><a target="_blank" href="test2/cache/list">View缓存测试</a></li>
 	<li><a target="_blank" href="test2/intercept/list">拦截器测试</a></li>
+	<li></li>
+	<li><a target="_blank" href="test2/upload/list">文件上传测试</a></li>
+	<li><a target="_blank" href="test2/download/list">文件下载测试</a></li>
+	<li></li>
 	<li><a target="_blank" href="test/curd/list">CURD测试</a></li>
 	</ul>
 </body>
