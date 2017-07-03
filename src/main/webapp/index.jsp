@@ -18,7 +18,7 @@
 	</center>
 	<hr>
 	<ul>
-	<li><a target="_blank" href="test0/mapping/list">请求映射测试（StandardMappingAdapter）参数方法键为“mod”</a></li>
+	<li><a target="_blank" href="test0/mapping/list">请求映射测试（StandardMappingAdapter）参数方法键为“med”</a></li>
 	<li><a target="_blank" href="test1/mapping/list">请求映射测试（StandardMappingAdapter）方法分隔符为“-”</a></li>
 	<li><a target="_blank" href="test2/mapping/list">请求映射测试（SimpleRestMappingAdapter）</a></li>
 	<li><a target="_blank" href="test3/mapping/list">请求映射测试（StrictSimpleRestMappingAdapter）</a></li>
