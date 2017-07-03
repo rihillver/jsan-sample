@@ -19,6 +19,7 @@
 		<li><a href="/test2/cache/bar">缓存30秒</a></li>
 		<li><a href="/test2/cache/baz">不缓存</a></li>
 		<li><a href="/test2/cache/qux">指定不缓存</a></li>
+		<li><a href="/test2/cache/foobar">不适用使用缓存</a></li>
 	</ul>
 </body>
 </html>
