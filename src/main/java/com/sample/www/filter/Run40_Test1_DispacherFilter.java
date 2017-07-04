@@ -9,7 +9,7 @@ import com.jsan.mvc.filter.DispatcherFilter;
 		initParams = {
 				@WebInitParam(name = "debug", value = "true"), 
 				@WebInitParam(name = "executeTime", value = "etime"), 
-				@WebInitParam(name = "mappingSuffix", value = ".action"),
+				@WebInitParam(name = "mappingSuffix", value = ",.html,.do,.action"),
 				@WebInitParam(name = "methodDelimiter", value = "-")
 				}, 
 		urlPatterns = "/test1/*")
