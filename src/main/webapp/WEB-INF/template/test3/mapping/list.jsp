@@ -17,6 +17,9 @@
 	<hr>
 	<ul>
 		<li>foo --> <a href="foo">Index.foo()</a></li>
+		<li>foo.html --> <a href="foo.html">404</a></li>
+		<li>foo.do --> <a href="foo.do">404</a></li>
+		<li>foo.action --> <a href="foo.action">404</a></li>
 		<li>foo/ --> <a href="foo/">(foo/)Index.index()</a></li>
 		<li>bar?id=123&name=jack&sex=1 --> <a href="bar?id=123&name=jack&sex=1">Index.bar()</a></li>
 		<li>bar/?id=123&name=jack&sex=1 --> <a href="bar/?id=123&name=jack&sex=1">(bar/)Index.ultimate()</a></li>

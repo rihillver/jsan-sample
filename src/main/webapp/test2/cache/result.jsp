@@ -17,5 +17,7 @@
 	<p>one（缓存30秒）: ${one }</p>
 	<p>two（缓存30秒）: ${two }</p>
 	<p>three（不缓存）: ${three.randomStr }</p>
+	<hr>
+	<p>执行耗时：${etime }</p>
 </body>
 </html>

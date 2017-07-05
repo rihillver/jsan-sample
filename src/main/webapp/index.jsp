@@ -32,6 +32,8 @@
 	<li><a target="_blank" href="test2/download/list">文件下载测试</a></li>
 	<li></li>
 	<li><a target="_blank" href="test/curd/list">CURD测试</a></li>
+	<li></li>
+	<li><a target="_blank" href="about">关于</a></li>
 	</ul>
 </body>
 </html>

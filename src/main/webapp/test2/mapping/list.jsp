@@ -16,6 +16,9 @@
 	<hr>
 	<ul>
 		<li>/test2/mapping/foo --> <a href="/test2/mapping/foo">Index.foo()</a></li>
+		<li>/test2/mapping/foo.html --> <a href="/test2/mapping/foo.html">404</a></li>
+		<li>/test2/mapping/foo.do --> <a href="/test2/mapping/foo.do">Index.foo()</a></li>
+		<li>/test2/mapping/foo.action --> <a href="/test2/mapping/foo.action">404</a></li>
 		<li>/test2/mapping/foo/ --> <a href="/test2/mapping/foo/">Index.foo()</a></li>
 		<li>/test2/mapping/bar?id=123&name=jack&sex=1 --> <a href="/test2/mapping/bar?id=123&name=jack&sex=1">Index.bar()</a></li>
 		<li>/test2/mapping/bar/?id=123&name=jack&sex=1 --> <a href="/test2/mapping/bar/?id=123&name=jack&sex=1">Index.bar()</a></li>

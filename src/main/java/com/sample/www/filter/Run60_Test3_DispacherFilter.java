@@ -13,8 +13,10 @@ import com.jsan.mvc.filter.DispatcherFilter;
 @WebFilter(
 		initParams = {
 				@WebInitParam(name = "debug", value = "true"), 
-				@WebInitParam(name = "executeTime", value = "etime"), 
-				@WebInitParam(name = "mappingSuffix", value = ",.html"),
+				@WebInitParam(name = "contextPath", value = "/jsan-sample"), 
+				@WebInitParam(name = "viewPath", value = "/WEB-INF/template"), 
+				@WebInitParam(name = "executeTime", value = "et"), 
+				// @WebInitParam(name = "mappingSuffix", value = ",.html"), // 缺省为 ""，即无后缀
 				@WebInitParam(name = "configFile", value = "/test3-jsanmvc.properties")
 				}, 
 		urlPatterns = "/test3/*")

@@ -15,5 +15,7 @@
 	result
 	<hr>
 	<p>value: ${value}</p>
+	<hr>
+	<p>执行耗时：${et}</p>
 </body>
 </html>
