@@ -8,37 +8,37 @@ public class News {
 	@Render(HTML)
 	public String ultimate() {
 
-		return "ultimate()";
+		return getClass() + ".ultimate()";
 	}
 
 	@Render(HTML)
 	public String index(String id, String name, Boolean sex) {
 
-		return "index() - id=" + id + ",name=" + name + ",sex=" + sex;
+		return getClass() + ".index() - id=" + id + ",name=" + name + ",sex=" + sex;
 	}
 
 	@Render(HTML)
 	public String foo(Integer id, String name, boolean sex) {
 
-		return "foo() - id=" + id + ",name=" + name + ",sex=" + sex;
+		return getClass() + ".foo() - id=" + id + ",name=" + name + ",sex=" + sex;
 	}
 
 	@Render(HTML)
 	public String bar() {
 
-		return "bar()";
+		return getClass() + ".bar()";
 	}
 
 	@Render(HTML)
 	public String baz() {
 
-		return "baz()";
+		return getClass() + ".baz()";
 	}
 
 	@Render(HTML)
 	public String qux() {
 
-		return "qux()";
+		return getClass() + ".qux()";
 	}
 
 }

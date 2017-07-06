@@ -8,12 +8,12 @@ public class Finance {
 	@Render(Resolver.HTML)
 	public String index() {
 
-		return "index()";
+		return getClass() + ".index()";
 	}
 
 	@Render(Resolver.HTML)
 	public String foo() {
 
-		return "foo()";
+		return getClass() + ".foo()";
 	}
 }

@@ -8,7 +8,7 @@ public class TestFoo {
 	@Render(Resolver.HTML)
 	public String index() {
 
-		return "index()";
+		return getClass() + ".index()";
 	}
 
 }

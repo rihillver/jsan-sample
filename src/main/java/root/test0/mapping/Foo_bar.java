@@ -8,7 +8,7 @@ public class Foo_bar {
 	@Render(Resolver.HTML)
 	public String ultimate() {
 
-		return "ultimate()";
+		return getClass() + ".ultimate()";
 	}
 
 }

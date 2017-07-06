@@ -27,51 +27,51 @@ public class Index {
 			return handleNumberAndAlphabet(value);
 		}
 
-		return "methodValue = " + value;
+		return getClass() + ".ultimate() -> methodValue = " + value;
 	}
 
 	private String handleLength(String value) {
 
-		return "长度为5：" + value;
+		return getClass() + ".ultimate() -> handleLength() -> 长度为5：" + value;
 	}
 
 	private String handleNumber(String value) {
 
-		return "纯数字：" + value;
+		return getClass() + ".ultimate() -> handleNumber() -> 纯数字：" + value;
 	}
 
 	private String handleAlphabet(String value) {
 
-		return "纯英文：" + value;
+		return getClass() + ".ultimate() -> handleAlphabet() -> 纯英文：" + value;
 	}
 
 	private String handleNumberAndAlphabet(String value) {
 
-		return "纯数字英文：" + value;
+		return getClass() + ".ultimate() -> handleNumberAndAlphabet() -> 纯数字英文：" + value;
 	}
 
 	@Render(url = "ultimate")
 	public String foo() {
 
-		return "foo()";
+		return getClass() + ".foo()";
 	}
 
 	@Render(url = "ultimate")
 	public String bar(int id, String name, boolean sex, Integer age) {
 
-		return "bar() --> id=" + id + ",name=" + name + ",sex=" + sex + ",age=" + age;
+		return getClass() + ".bar() --> id=" + id + ",name=" + name + ",sex=" + sex + ",age=" + age;
 	}
 
 	@Render(url = "ultimate")
 	public String testFoo() {
 
-		return "testFoo()";
+		return getClass() + ".testFoo()";
 	}
 
 	@Render(url = "ultimate")
 	public String foo_bar() {
 
-		return "foo_bar()";
+		return getClass() + ".foo_bar()";
 	}
 
 }

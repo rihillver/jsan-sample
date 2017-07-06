@@ -8,12 +8,12 @@ public class Index {
 	@Render(Resolver.HTML)
 	public String ultimate(int id) {
 
-		return "ultimate() - id=" + id;
+		return getClass() + ".ultimate() - id=" + id;
 	}
 
 	@Render(Resolver.HTML)
 	public String qux(int id) {
 
-		return "qux() - id=" + id;
+		return getClass() + ".qux() - id=" + id;
 	}
 }

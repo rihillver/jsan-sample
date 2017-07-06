@@ -8,7 +8,7 @@ public class Index {
 	@Render(Resolver.HTML)
 	public String ultimate() {
 
-		return "ultimate()";
+		return getClass() + ".ultimate()";
 	}
 
 }

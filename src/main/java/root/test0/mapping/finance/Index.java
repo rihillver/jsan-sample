@@ -8,12 +8,12 @@ public class Index {
 	@Render(Resolver.HTML)
 	public String index() {
 
-		return "index()";
+		return getClass() + ".index()";
 	}
 
 	@Render(Resolver.HTML)
 	public String bar() {
 
-		return "bar()";
+		return getClass() + ".bar()";
 	}
 }

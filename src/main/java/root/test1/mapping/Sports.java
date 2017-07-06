@@ -8,13 +8,13 @@ public class Sports {
 	@Render(TEXT)
 	public String ultimate(int id, String name, Integer age) {
 
-		return "ultimate() - id=" + id + ",name=" + name + ",age=" + age;
+		return getClass() + ".ultimate() - id=" + id + ",name=" + name + ",age=" + age;
 	}
 
 	@Render(TEXT)
 	public String qux(int id, String name, Integer age) {
 
-		return "qux() - id=" + id + ",name=" + name + ",age=" + age;
+		return getClass() + ".qux() - id=" + id + ",name=" + name + ",age=" + age;
 	}
 
 }

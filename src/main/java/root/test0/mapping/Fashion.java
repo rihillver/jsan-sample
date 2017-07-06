@@ -8,12 +8,12 @@ public class Fashion {
 	@Render(Resolver.HTML)
 	public String ultimate(int id) {
 
-		return "ultimate() - id=" + id;
+		return getClass() + ".ultimate() - id=" + id;
 	}
 
 	@Render(Resolver.HTML)
 	public String baz(int id) {
 
-		return "baz() - id=" + id;
+		return getClass() + ".baz() - id=" + id;
 	}
 }
