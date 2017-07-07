@@ -1,7 +1,11 @@
 package root.test2.form;
 
 import java.lang.reflect.Type;
+import java.sql.Time;
+import java.sql.Timestamp;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
@@ -14,6 +18,8 @@ import com.jsan.convert.SplitConvertService;
 import com.jsan.convert.SplitTrimConvertService;
 import com.jsan.convert.annotation.ConvertServiceRegister;
 import com.jsan.convert.annotation.ConverterRegister;
+import com.jsan.convert.annotation.DateTimePattern;
+import com.jsan.convert.annotation.NumberPattern;
 import com.jsan.convert.support.split.trim.AbstractMapSplitTrimConverter;
 import com.jsan.convert.support.split.trim.ListSplitTrimConverter;
 import com.jsan.mvc.View;
@@ -95,6 +101,49 @@ public class Index {
 
 		System.out.println("like.length=" + like.size());
 		System.out.println("like0.length=" + like0.size());
+	}
+
+	@Get
+	@Render
+	public void baz() {
+
+	}
+
+	/**
+	 * 日期时间、数字格式测试。
+	 * <p>
+	 * 缺省日期时间格式：yyyy-MM-dd HH:mm:ss
+	 * 
+	 */
+	@Post
+	@Render(url = "baz-result")
+	@NumberPattern("#,###.00")
+	public void baz(View view, Date date, @DateTimePattern("yyyy-MM-dd") Date date0,
+			@DateTimePattern("yyyy-MM-dd") @ParamName("date0") java.sql.Date sqlDate,
+			@DateTimePattern("yyyy年M月d日") Date date1,
+			@DateTimePattern("yyyy年M月d日") @ParamName("date1") Timestamp sqlTimestamp,
+			@DateTimePattern("yyyy年MM月dd日 HH时mm分ss秒") Date date2,
+			@DateTimePattern("yyyy年MM月dd日 HH时mm分ss秒") @ParamName("date2") Time sqlTime,
+			@DateTimePattern("yyyy#MM#dd") Date date3, @DateTimePattern("yyyy-MM-dd HH:mm:ss.S") Calendar calendar,
+			int number, double number1, Double number2, float number3, Float number4,
+			@NumberPattern("0.00%") double number5) {
+
+		view.add("date", date);
+		view.add("date0", date0);
+		view.add("sqlDate", sqlDate);
+		view.add("date1", date1);
+		view.add("sqlTimestamp", sqlTimestamp);
+		view.add("date2", date2);
+		view.add("sqlTime", sqlTime);
+		view.add("date3", date3);
+		view.add("calendar", calendar);
+
+		view.add("number", number);
+		view.add("number1", number1);
+		view.add("number2", number2);
+		view.add("number3", number3);
+		view.add("number4", number4);
+		view.add("number5", number5);
 	}
 
 	public static class Custom_UserConverter extends AbstractRecursiveableConverter {
