@@ -1,14 +1,21 @@
 package root.test2.form;
 
+import java.lang.reflect.Type;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.jsan.convert.AbstractRecursiveableConverter;
 import com.jsan.convert.JsonConvertService;
 import com.jsan.convert.SplitConvertService;
 import com.jsan.convert.SplitTrimConvertService;
 import com.jsan.convert.annotation.ConvertServiceRegister;
+import com.jsan.convert.annotation.ConverterRegister;
+import com.jsan.convert.support.split.trim.AbstractMapSplitTrimConverter;
+import com.jsan.convert.support.split.trim.ListSplitTrimConverter;
 import com.jsan.mvc.View;
 import com.jsan.mvc.annotation.Get;
 import com.jsan.mvc.annotation.JsonConvert;
@@ -30,6 +37,10 @@ public class Index {
 
 	}
 
+	/**
+	 * 常用表单转换测试。
+	 * 
+	 */
 	@Post
 	@Render(url = "foo-result")
 	@ConvertServiceRegister(SplitConvertService.class)
@@ -56,6 +67,79 @@ public class Index {
 		view.add("jsonArray", jsonArray);
 		view.add("jsonObject", jsonObject);
 
+	}
+
+	@Get
+	@Render
+	public void bar() {
+
+	}
+
+	/**
+	 * 自定义转换器测试。
+	 * 
+	 */
+	@Post
+	@Render(url = "bar-result")
+	public void bar(View view, @ConvertServiceRegister(SplitTrimConvertService.class) List<String> like,
+			@ConvertServiceRegister(SplitTrimConvertService.class) @ConverterRegister(Custom_ListConverter.class) @ParamName("like") List<String> like0,
+			@ConvertServiceRegister(SplitTrimConvertService.class) HashMap<String, String> family,
+			@ConvertServiceRegister(SplitTrimConvertService.class) @ConverterRegister(Custom_HashtableConverter.class) @ParamName("family") Hashtable<String, String> family0,
+			@ConverterRegister(Custom_UserConverter.class) User user) {
+
+		view.add("like", like);
+		view.add("like0", like0);
+		view.add("family", family);
+		view.add("family0", family0);
+		view.add("user", user);
+
+		System.out.println("like.length=" + like.size());
+		System.out.println("like0.length=" + like0.size());
+	}
+
+	public static class Custom_UserConverter extends AbstractRecursiveableConverter {
+		@Override
+		public User convert(Object source, Type type) {
+			User user = null;
+			if (source != null) {
+				user = new User();
+				String[] strs = ((String) source).split(",");
+				try {
+					user.setId((int) lookupConverter(int.class).convert(strs[0], int.class));
+					user.setName((String) lookupConverter(String.class).convert(strs[1], String.class));
+					user.setSex((boolean) lookupConverter(boolean.class).convert(strs[2], boolean.class));
+					user.setAge((Integer) lookupConverter(Integer.class).convert(strs[3], Integer.class));
+				} catch (Exception e) {
+					// skip
+				}
+			}
+			return user;
+		}
+	}
+
+	/**
+	 * 自定义去除所有空格以及替换中文逗号。
+	 *
+	 */
+	public static class Custom_ListConverter extends ListSplitTrimConverter {
+		@Override
+		public List<?> convert(Object source, Type type) {
+			if (source instanceof String) {
+				source = ((String) source).replaceAll(" ", "").replaceAll("，", ",");
+			}
+			return super.convert(source, type);
+		}
+	}
+
+	/**
+	 * 增加 Hashtable 类型的支持。
+	 *
+	 */
+	public static class Custom_HashtableConverter extends AbstractMapSplitTrimConverter {
+		@Override
+		public Hashtable<?, ?> convert(Object source, Type type) {
+			return getMapConvert(Hashtable.class, source, type);
+		}
 	}
 
 	public static class User {
