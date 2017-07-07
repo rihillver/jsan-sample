@@ -1,5 +1,7 @@
 package root.test2.form;
 
+import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Type;
 import java.sql.Time;
 import java.sql.Timestamp;
@@ -29,6 +31,11 @@ import com.jsan.mvc.annotation.MultiValue;
 import com.jsan.mvc.annotation.ParamName;
 import com.jsan.mvc.annotation.Post;
 import com.jsan.mvc.annotation.Render;
+import com.jsan.mvc.resolve.Resolver;
+import com.jsan.util.PathUtils;
+import com.jsan.util.RandomUtils;
+import com.jsan.util.StreamUtils;
+import com.jsan.util.crypto.Base64Utils;
 
 public class Index {
 
@@ -144,6 +151,55 @@ public class Index {
 		view.add("number3", number3);
 		view.add("number4", number4);
 		view.add("number5", number5);
+	}
+
+	/**
+	 * 图片输出测试。
+	 * 
+	 */
+	@Render(Resolver.BYTE)
+	public byte[] quz(View view) throws IOException {
+
+		File file = null;
+
+		int i = RandomUtils.getInt(1, 5);
+
+		switch (i) {
+		case 1:
+			file = getFile("jpg");
+			view.setContentType("image/jpeg");
+			break;
+		case 2:
+			file = getFile("png");
+			view.setContentType("image/png");
+			break;
+		case 3:
+			file = getFile("gif");
+			view.setContentType("image/gif");
+			break;
+		case 4:
+			file = getFile("bmp");
+			view.setContentType("image/bmp");
+			break;
+
+		default:
+			view.setContentType("image/gif");
+			return getGifByBase64();
+		}
+
+		byte[] bytes = StreamUtils.readFileToByte(file);
+		return bytes;
+	}
+
+	private File getFile(String fileType) {
+
+		return new File(PathUtils.getWebRootFile(), "/res/file/a." + fileType);
+	}
+
+	private byte[] getGifByBase64() {
+
+		String str = "R0lGODlhrgCQALMAAIPAM8HemvP57ZjLVdzsxo3GQ6vUdf///+rz3cvkqrbbh6DPZM/nsIi7RJnMRPr89iH5BAAHAP8ALAAAAACuAJAAAAT/sMhJq7046827/2AojmRpnmiqrmzrvnAsz3Rt33iu73zv/8CgcEgsGo/IpHLJbDqf0Kh0Sq1ar9isdsvter/gsHhMLpvP6LR6zW673/C4fE6v2+/4vH7P7/v/gIGCg4SFhoeIiYqLjI2Oj5CRNQAAF5SVki2VCwoJDASgBAkKCwOUmSoDAQQPB66vsAgJBgWYqCIAAwkIsL2+DwQLtyMKvL7HvQ8JpsMeAcjQvggLts0XAwTR2rACBtXWFNnb4wfd1acVl48M5O3T6pwBngwMowYDtd+FAAGt7eQEBhjY5e+YAAIK8CVaIODfPwQNySEIwMwQO4cY/wkIsM9AxIwg/8cF09fnYsiT2t4ByvURpUuDtP4AUPCyJjIB1P6YtMnTFYKKfMT1HEqgD8uhSA8oIDknF4OCSW3+ZAoHgAFjUYcGoOpmZsusPKfaUQAVbM+ldciajcqADgCGa6MioDMAa1ykQN/svDvUW1UDZfnyRAtHqOChCbiWsRr4cM3EhR0n3foGruShhNs8u9xXMRnDnGtyfPM1tMsHbT2DWdDYNMqAqrtYdY20qBp+tJFCRoM7d88Hfs8ASOCbqEIzvYsPjp0lufKatpHTfG7zQV4xjKnbDG6mtHaQlM/Y/R5yt5nN5E8yYI7lbev05NanAQ3/n/nF0+tjzGymrn6MOfGW3+J/48zFBn0EIjPaGh4lmFKAtw3ooC8LtkHchNJct8ZeE5ojB4cviRLXAwrUEYB3IbVVQDHtPIBiNALwF4dV44EU4wRvJfDiKwQYYACC0PTIHhqqvLcNahBOoAoBAhTkIgIM3HNKADVKQ9GQaixApUMCRFmLBgIpIKYBwliQiwIMIPDAmmwiQMCVf3DCpDYHBVBmB5eog0ElYYqpwD35BMKnAQF8EgoBDARAZqAv5JmnIXqaiSU4lFZq6aWYZqrpppx26umnoIYq6qiklmrqqaimquqqrLbq6quwxirrrLTWWkYEADs=";
+		return Base64Utils.decodeToByte(str);
 	}
 
 	public static class Custom_UserConverter extends AbstractRecursiveableConverter {
