@@ -1,7 +1,11 @@
 package root.test2.form;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.sql.Time;
 import java.sql.Timestamp;
@@ -14,6 +18,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import com.jsan.convert.AbstractRecursiveableConverter;
 import com.jsan.convert.JsonConvertService;
 import com.jsan.convert.SplitConvertService;
@@ -24,6 +31,8 @@ import com.jsan.convert.annotation.DateTimePattern;
 import com.jsan.convert.annotation.NumberPattern;
 import com.jsan.convert.support.split.trim.AbstractMapSplitTrimConverter;
 import com.jsan.convert.support.split.trim.ListSplitTrimConverter;
+import com.jsan.mvc.MappingInfo;
+import com.jsan.mvc.MvcConfig;
 import com.jsan.mvc.View;
 import com.jsan.mvc.annotation.Get;
 import com.jsan.mvc.annotation.JsonConvert;
@@ -36,6 +45,8 @@ import com.jsan.util.PathUtils;
 import com.jsan.util.RandomUtils;
 import com.jsan.util.StreamUtils;
 import com.jsan.util.crypto.Base64Utils;
+import com.sample.www.custom.GifResolver;
+import com.sample.www.custom.JpegResolver;
 
 public class Index {
 
@@ -90,16 +101,20 @@ public class Index {
 
 	/**
 	 * 自定义转换器测试。
+	 * <p>
+	 * Custom_IntegerConverter、Custom_UserConverter
 	 * 
 	 */
 	@Post
 	@Render(url = "bar-result")
-	public void bar(View view, @ConvertServiceRegister(SplitTrimConvertService.class) List<String> like,
+	public void bar(View view, @ConverterRegister(Custom_IntegerConverter.class) Integer number,
+			@ConvertServiceRegister(SplitTrimConvertService.class) List<String> like,
 			@ConvertServiceRegister(SplitTrimConvertService.class) @ConverterRegister(Custom_ListConverter.class) @ParamName("like") List<String> like0,
 			@ConvertServiceRegister(SplitTrimConvertService.class) HashMap<String, String> family,
 			@ConvertServiceRegister(SplitTrimConvertService.class) @ConverterRegister(Custom_HashtableConverter.class) @ParamName("family") Hashtable<String, String> family0,
 			@ConverterRegister(Custom_UserConverter.class) User user) {
 
+		view.add("number", number);
 		view.add("like", like);
 		view.add("like0", like0);
 		view.add("family", family);
@@ -108,6 +123,13 @@ public class Index {
 
 		System.out.println("like.length=" + like.size());
 		System.out.println("like0.length=" + like0.size());
+	}
+
+	public static class Custom_IntegerConverter extends AbstractRecursiveableConverter {
+		@Override
+		public Integer convert(Object source, Type type) {
+			return 888888;
+		}
 	}
 
 	@Get
@@ -154,11 +176,86 @@ public class Index {
 	}
 
 	/**
-	 * 图片输出测试。
+	 * 客户端转发测试1、2。
+	 * 
+	 */
+	@Render(value = Resolver.REDIRECT, url = "qur")
+	public void qux() {
+
+	}
+
+	@Render(value = Resolver.REDIRECT, url = "quz")
+	public void qur() {
+
+		System.out.println(getClass() + ".qur() has been running.");
+	}
+
+	@Render(Resolver.HTML)
+	public String quz() {
+
+		return getClass() + ".quz()";
+	}
+
+	/**
+	 * 客户端转发测试3、4。
+	 * 
+	 */
+	@Render(value = Resolver.REDIRECT, url = "test.html")
+	public void dux() {
+
+	}
+
+	/**
+	 * 客户端转发测试5、6。
+	 * 
+	 */
+	@Render(value = Resolver.REDIRECT, url = "/about")
+	public void fux() {
+
+	}
+
+	/**
+	 * 客户端转发测试7。
+	 * 
+	 */
+	@Render(value = Resolver.REDIRECT, url = "/index.html")
+	public void gux() {
+
+	}
+
+	/**
+	 * 客户端转发测试8。
+	 * 
+	 */
+	@Render(value = Resolver.REDIRECT, url = "/")
+	public void hux() {
+
+	}
+
+	/**
+	 * 客户端转发测试9。
+	 * 
+	 */
+	@Render(value = Resolver.JUMP, url = "https://www.baidu.com")
+	public void kux() {
+
+	}
+
+	/**
+	 * 客户端转发测试10。
+	 * 
+	 */
+	@Render(value = Resolver.JUMP, url = "http://tuijian.hao123.com/finance")
+	public void lux() {
+
+	}
+
+	/**
+	 * 图片输出测试1-Byte。
 	 * 
 	 */
 	@Render(Resolver.BYTE)
-	public byte[] quz(View view) throws IOException {
+	public byte[] one(View view) throws IOException {
 
 		File file = null;
 
@@ -191,6 +288,102 @@ public class Index {
 		return bytes;
 	}
 
+	/**
+	 * 图片输出测试2-Steam。
+	 * 
+	 */
+	@Render(Resolver.STREAM)
+	public InputStream two(View view) throws FileNotFoundException {
+
+		File file = null;
+
+		int i = RandomUtils.getInt(1, 5);
+
+		switch (i) {
+		case 1:
+			file = getFile("jpg");
+			view.setContentType("image/jpeg");
+			break;
+		case 2:
+			file = getFile("png");
+			view.setContentType("image/png");
+			break;
+		case 3:
+			file = getFile("gif");
+			view.setContentType("image/gif");
+			break;
+		case 4:
+			file = getFile("bmp");
+			view.setContentType("image/bmp");
+			break;
+
+		default:
+			view.setContentType("image/gif");
+			return new ByteArrayInputStream(getGifByBase64());
+		}
+
+		return new FileInputStream(file);
+	}
+
+	/**
+	 * 自定义视图解析器测试1。
+	 * 
+	 */
+	@Render(JpegResolver.JPEG)
+	public byte[] three() throws IOException {
+
+		byte[] bytes = StreamUtils.readFileToByte(getFile("jpg"));
+		return bytes;
+	}
+
+	/**
+	 * 自定义视图解析器测试2。
+	 * 
+	 */
+	@Render(GifResolver.GIF)
+	public byte[] four() {
+
+		return getGifByBase64();
+	}
+
+	/**
+	 * 自定义视图解析器测试3。
+	 * 
+	 */
+	@Render(resolver = Custom_PngResolver.class)
+	public String five() {
+
+		return "/res/file/a.png";
+	}
+
+	/**
+	 * 自定义视图解析器测试4、5、6、7。
+	 * 
+	 */
+	@Render(Resolver.HTML)
+	public String six(View view, String url) {
+
+		if (url == null) {
+			url = "custom resolver test.";
+		}
+
+		if (url.endsWith(".png")) {
+			view.setResolver(custom_PngResolver);
+		}
+
+		return url;
+	}
+
+	private static final Custom_PngResolver custom_PngResolver = new Custom_PngResolver();
+
+	public static class Custom_PngResolver implements Resolver {
+		@Override
+		public void execute(View view, MvcConfig mvcConfig, MappingInfo mappingInfo, HttpServletRequest request,
+				HttpServletResponse response) throws Exception {
+			response.sendRedirect((String) view.getValue());
+		}
+	}
+
 	private File getFile(String fileType) {
 
 		return new File(PathUtils.getWebRootFile(), "/res/file/a." + fileType);
@@ -215,7 +408,6 @@ public class Index {
 					user.setSex((boolean) lookupConverter(boolean.class).convert(strs[2], boolean.class));
 					user.setAge((Integer) lookupConverter(Integer.class).convert(strs[3], Integer.class));
 				} catch (Exception e) {
-					// skip
 				}
 			}
 			return user;

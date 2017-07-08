@@ -15,6 +15,7 @@
 自定义转换器测试
 <hr>
 	<form action="" method="post">
+	<p>number:<input type="text" name="number" value="123456.789"></p>
 	<p>like:<textarea rows="5" cols="100" name="like"> 读书 , 看 报纸          ,下棋       , 音  乐,       跳舞      ， 看电影      </textarea></p>
 	<p>family:<textarea rows="5" cols="100" name="family">爷爷: 张二,父亲 : 张三 , 母亲 :李芳, 哥哥:张五, 姐姐: 张艳, 弟弟 : 张六</textarea></p>
 	<p>user:<textarea rows="5" cols="100" name="user">122,张三,true,28</textarea></p>

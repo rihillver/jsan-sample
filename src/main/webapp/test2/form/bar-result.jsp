@@ -14,6 +14,7 @@
 <body>
 	result
 	<hr>
+	<p>number=${number }</p>
 	<p>like=${like }</p>
 	<p>like0=${like0 }</p>
 	<p>family=${family }</p>
