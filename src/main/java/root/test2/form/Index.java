@@ -34,6 +34,7 @@ import com.jsan.convert.support.split.trim.ListSplitTrimConverter;
 import com.jsan.mvc.MappingInfo;
 import com.jsan.mvc.MvcConfig;
 import com.jsan.mvc.View;
+import com.jsan.mvc.annotation.FormConvert;
 import com.jsan.mvc.annotation.Get;
 import com.jsan.mvc.annotation.JsonConvert;
 import com.jsan.mvc.annotation.MultiValue;
@@ -374,6 +375,63 @@ public class Index {
 		return url;
 	}
 
+	@Get
+	@Render(url = "map-bean")
+	public Object toMap() {
+
+		return null;
+	}
+
+	/**
+	 * 表单转Map测试。
+	 * 
+	 */
+	@Post
+	@Render(Resolver.HTML)
+	public Object toMap(@FormConvert @MultiValue("address") Map<String, Object> map,
+			@FormConvert(params = { "id", "name", "age" }) HashMap<String, String> map1) {
+
+		if (map.get("address").getClass().isArray()) {
+			System.out.println("address length=" + ((String[]) map.get("address")).length);
+		}
+		System.out.println("school.address type=" + map.get("school.address").getClass());
+
+		return "map = " + map + "<hr>map1 = " + map1;
+	}
+
+	@Get
+	@Render(url = "map-bean")
+	public Object toBean() {
+
+		return null;
+	}
+
+	/**
+	 * 表单转Bean测试。
+	 * 
+	 */
+	@Post
+	@Render(Resolver.HTML)
+	public Object toBean(@FormConvert(true) @MultiValue("address") User user,
+			@FormConvert(params = { "name", "age", "address" }) @MultiValue("address") User user1,
+			@FormConvert(params = { "number", "shortName" }) School school, @ParamName("school.name") String sName,
+			@ConvertServiceRegister(SplitTrimConvertService.class) @ParamName("school.address") String[] sAddress,
+			@FormConvert @MultiValue({ "address" }) School school1) {
+
+		if (user != null && school != null) {
+			school.setName(sName);
+			school.setAddress(sAddress);
+			System.out.println("school address length=" + sAddress.length);
+			user.setSchool(school);
+		}
+		if (user1 != null && school1 != null) {
+			school1.setName(sName);
+			System.out.println("school1 address length=" + school1.getAddress().length);
+			user1.setSchool(school1);
+		}
+		return "user(" + user.getClass() + ") = " + user + "<hr>user1(" + user1.getClass() + ") = " + user1;
+	}
+
 	private static final Custom_PngResolver custom_PngResolver = new Custom_PngResolver();
 
 	public static class Custom_PngResolver implements Resolver {
@@ -444,8 +502,10 @@ public class Index {
 		int id;
 		String name;
 		boolean sex;
+		Double height;
 		Integer age;
 		List<String> address;
+		School school;
 
 		public int getId() {
 			return id;
@@ -471,6 +531,14 @@ public class Index {
 			this.sex = sex;
 		}
 
+		public Double getHeight() {
+			return height;
+		}
+
+		public void setHeight(Double height) {
+			this.height = height;
+		}
+
 		public Integer getAge() {
 			return age;
 		}
@@ -487,9 +555,65 @@ public class Index {
 			this.address = address;
 		}
 
+		public School getSchool() {
+			return school;
+		}
+
+		public void setSchool(School school) {
+			this.school = school;
+		}
+
 		@Override
 		public String toString() {
-			return "User [id=" + id + ", name=" + name + ", sex=" + sex + ", age=" + age + ", address=" + address + "]";
+			return "User [id=" + id + ", name=" + name + ", sex=" + sex + ", height=" + height + ", age=" + age
+					+ ", address=" + address + ", school=" + school + "]";
+		}
+
+	}
+
+	public static class School {
+
+		String number;
+		String name;
+		String shortName;
+		String[] address;
+
+		public String getNumber() {
+			return number;
+		}
+
+		public void setNumber(String number) {
+			this.number = number;
+		}
+
+		public String getName() {
+			return name;
+		}
+
+		public void setName(String name) {
+			this.name = name;
+		}
+
+		public String getShortName() {
+			return shortName;
+		}
+
+		public void setShortName(String shortName) {
+			this.shortName = shortName;
+		}
+
+		public String[] getAddress() {
+			return address;
+		}
+
+		public void setAddress(String[] address) {
+			this.address = address;
+		}
+
+		@Override
+		public String toString() {
+			return "School [number=" + number + ", name=" + name + ", shortName=" + shortName + ", address="
+					+ Arrays.toString(address) + "]";
 		}
 
 	}

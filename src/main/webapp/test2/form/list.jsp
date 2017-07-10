@@ -42,8 +42,8 @@
 		<li><a href="/test2/form/six?url=%2fres%2ffile%2fa.png">自定义视图解析器测试6</a></li>
 		<li><a href="/test2/form/six?url=%2fres%2ffile%2fb.png">自定义视图解析器测试7</a></li>
 		<li></li>
-		<li><a href="/test2/form/four">表单转Map测试</a></li>
-		<li><a href="/test2/form/five">表单转Bean测试</a></li>
+		<li><a href="/test2/form/toMap">表单转Map测试</a></li>
+		<li><a href="/test2/form/toBean">表单转Bean测试</a></li>
 	</ul>
 </body>
 </html>
