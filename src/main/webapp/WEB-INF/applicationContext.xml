@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+	<context:component-scan base-package="root.test4,root.test5"
+		name-generator="com.jsan.spring.QualifiedBeanNameGenerator" />
+
+	<aop:aspectj-autoproxy proxy-target-class="true" />
+
+	<bean class="com.jsan.spring.ContextUtils"></bean>
+
+	<context:component-scan base-package="com.sample.www.service,com.sample.www.dao" />
+
+	<bean id="user" scope="prototype" class="root.test4.aop.Index.User">
+		<property name="id" value="123"></property>
+		<property name="sex" value="true"></property>
+		<property name="name" value="张三"></property>
+	</bean>
+
+	<bean id="person" class="com.sample.www.bean.Person">
+		<property name="id" value="234"></property>
+		<property name="sex" value="false"></property>
+		<property name="name" value="王五"></property>
+	</bean>
+
+</beans>
