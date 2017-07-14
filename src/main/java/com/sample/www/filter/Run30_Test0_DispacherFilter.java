@@ -13,7 +13,7 @@ import com.jsan.mvc.filter.DispatcherFilter;
 				@WebInitParam(name = "methodKey", value = "med"), // 缺省为"mod" 
 				@WebInitParam(name = "mappingSuffix", value = ",.html,.do,.action"),
 				}, 
-		urlPatterns = {"/test/*", "/test0/*"})
+		urlPatterns = "/test0/*")
 public class Run30_Test0_DispacherFilter extends DispatcherFilter {
 
 }

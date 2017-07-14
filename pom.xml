@@ -33,6 +33,7 @@
 		
 		<ehcache.version>2.10.4</ehcache.version>
 		<spring.version>4.3.9.RELEASE</spring.version>
+		<slf4j-simple.version>1.7.25</slf4j-simple.version>
 		
 		
 	</properties>
@@ -145,6 +146,14 @@
 			<artifactId>spring-aspects</artifactId>
 			<version>${spring.version}</version>
 		</dependency>
+		
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-simple</artifactId>
+			<version>${slf4j-simple.version}</version>
+		</dependency>
+
+		
 		
 		<!--
 		<dependency>
