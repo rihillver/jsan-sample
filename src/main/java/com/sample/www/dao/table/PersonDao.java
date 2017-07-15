@@ -1,4 +1,4 @@
-package com.sample.www.dao;
+package com.sample.www.dao.table;
 
 import org.springframework.stereotype.Repository;
 
@@ -10,19 +10,19 @@ public class PersonDao {
 
 	public int addPerson(Person person) {
 
-		System.out.println(person + " --> add...");
+		System.out.println(person + " -->111 add...");
 		return 1;
 	}
 
 	public boolean deletePerson(Person person) {
 
-		System.out.println(person + " --> delete...");
+		System.out.println(person + " -->111 delete...");
 		return true;
 	}
 
 	public Person findPerson(int id) {
 
-		System.out.println(id + " --> findPerson...");
+		System.out.println(id + " -->111 findPerson...");
 		return ContextUtils.getBean(Person.class);
 	}
 
@@ -30,4 +30,5 @@ public class PersonDao {
 	public String toString() {
 		return getClass().toString();
 	}
+
 }

@@ -14,12 +14,19 @@
 
 	<bean class="com.jsan.spring.ContextUtils"></bean>
 
-	<context:component-scan base-package="com.sample.www.service,com.sample.www.dao" />
+	<context:component-scan base-package="com.sample.www.service,com.sample.www.dao"
+		name-generator="com.jsan.spring.QualifiedBeanNameGenerator" />
 
 	<bean id="user" scope="prototype" class="root.test4.aop.Index.User">
 		<property name="id" value="123"></property>
 		<property name="sex" value="true"></property>
 		<property name="name" value="张三"></property>
+	</bean>
+
+	<bean id="user1" scope="prototype" class="root.test4.aop.Index.User">
+		<property name="id" value="123456"></property>
+		<property name="sex" value="false"></property>
+		<property name="name" value="赵六"></property>
 	</bean>
 
 	<bean id="person" class="com.sample.www.bean.Person">
