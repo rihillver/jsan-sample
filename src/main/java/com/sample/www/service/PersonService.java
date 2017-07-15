@@ -8,13 +8,14 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.jsan.spring.ContextUtils;
+import com.sample.www.ProjectUtils;
 import com.sample.www.bean.Person;
 import com.sample.www.dao.PersonDao;
 
 import root.test4.aop.Index.User;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration("file:D:/workspace/jsan-sample/src/main/webapp/WEB-INF/applicationContext.xml")
+@ContextConfiguration(ProjectUtils.SPRING_CONFIG_FILE)
 @Service
 public class PersonService {
 
@@ -26,13 +27,13 @@ public class PersonService {
 
 	@Test
 	public void test() {
-		
+
 		System.out.println(ContextUtils.getBean("user", User.class));
 		System.out.println(ContextUtils.getBean("user1", User.class));
 
 		doSomething(getPerson());
 		doSomething1(getPerson());
-		
+
 		System.out.println(ContextUtils.getBean(PersonDao.class));
 		System.out.println(ContextUtils.getBean(com.sample.www.dao.table.PersonDao.class));
 	}
