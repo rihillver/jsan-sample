@@ -8,10 +8,14 @@ import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.jsan.mvc.annotation.Render;
 import com.jsan.mvc.resolve.Resolver;
@@ -19,7 +23,10 @@ import com.jsan.spring.ContextUtils;
 import com.sample.www.dao.FooDao;
 import com.sample.www.service.BarService;
 import com.sample.www.service.FooService;
+import com.sample.www.util.ProjectUtils;
 
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(ProjectUtils.SPRING_CONFIG_FILE)
 @Controller
 public class Index {
 
@@ -39,13 +46,19 @@ public class Index {
 	@Render
 	public void list() {
 
-		System.out.println("=======================================");
+		System.out.println("=============== Bean Definition Names ===============");
 		String[] strs = ContextUtils.getApplicationContext().getBeanDefinitionNames();
 		for (String str : strs) {
 			System.out.println(str);
 		}
-		System.out.println("=======================================");
+		System.out.println("=====================================================");
 
+	}
+
+	@Test
+	public void testOne() {
+
+		System.out.println(one());
 	}
 
 	@Render(Resolver.HTML)

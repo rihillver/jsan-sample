@@ -1,4 +1,4 @@
-package com.sample.www;
+package com.sample.www.util;
 
 public class ProjectUtils {
 	

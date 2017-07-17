@@ -6,15 +6,23 @@ import java.util.Date;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.jsan.mvc.filter.AbstractRequestLogging;
 
 @WebFilter(urlPatterns = "/*")
-public class Run10_ConsoleRequestLoggingFilter extends AbstractRequestLogging {
+public class Run10_RequestLoggingFilter extends AbstractRequestLogging {
+	
+	protected Logger logger = LoggerFactory.getLogger(getClass());
 
 	@Override
 	protected void beforeRequest(HttpServletRequest request) {
 
-		System.out.println(getDateString() + " [" + getUserId(request) + "] (" + request.getRemoteAddr() + ") " + request.getRequestURI() + getQueryString(request));
+		//System.out.println(getDateString() + " [" + getUserId(request) + "] (" + request.getRemoteAddr() + ") " + request.getRequestURI() + getQueryString(request));
+
+		logger.info("[{}] ({}) {}{}", getUserId(request), request.getRemoteAddr(), request.getRequestURI(),
+				getQueryString(request));
 	}
 
 	@Override
