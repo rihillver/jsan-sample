@@ -14,25 +14,39 @@
 
 	<bean class="com.jsan.spring.ContextUtils"></bean>
 
-	<context:component-scan base-package="com.sample.www.service,com.sample.www.dao"
+	<context:component-scan base-package="com.sample.www.service" />
+
+	<context:component-scan base-package="com.sample.www.dao"
 		name-generator="com.jsan.spring.QualifiedBeanNameGenerator" />
 
-	<bean id="user" scope="prototype" class="root.test4.aop.Index.User">
-		<property name="id" value="123"></property>
-		<property name="sex" value="true"></property>
+	<bean class="root.test4.spring.Index.User">
+		<property name="id" value="3"></property>
 		<property name="name" value="张三"></property>
 	</bean>
 
-	<bean id="user1" scope="prototype" class="root.test4.aop.Index.User">
-		<property name="id" value="234"></property>
-		<property name="sex" value="false"></property>
+	<bean class="root.test4.spring.Index.User">
+		<property name="id" value="4"></property>
+		<property name="name" value="李四"></property>
+	</bean>
+
+	<bean class="root.test4.spring.Index.User">
+		<property name="id" value="5"></property>
+		<property name="name" value="王五"></property>
+	</bean>
+
+	<bean id="user" scope="prototype" class="root.test4.spring.Index.User">
+		<property name="id" value="6"></property>
 		<property name="name" value="赵六"></property>
 	</bean>
 
-	<bean id="person" class="com.sample.www.bean.Person">
-		<property name="id" value="456"></property>
-		<property name="sex" value="false"></property>
-		<property name="name" value="王五"></property>
+	<bean id="user1" name="user2" class="root.test4.spring.Index.User">
+		<property name="id" value="7"></property>
+		<property name="name" value="赵六"></property>
+	</bean>
+
+	<bean name="user3,user4,user5" class="root.test4.spring.Index.User">
+		<property name="id" value="8"></property>
+		<property name="name" value="陈八"></property>
 	</bean>
 
 </beans>

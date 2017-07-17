@@ -27,7 +27,7 @@
 	<li><a target="_blank" href="test2/json/list">JSON测试</a></li>
 	<li><a target="_blank" href="test2/cache/list">View缓存测试</a></li>
 	<li><a target="_blank" href="test2/intercept/list">拦截器测试</a></li>
-	<li><a target="_blank" href="test4/aop/list">Spring AOP测试</a></li>
+	<li><a target="_blank" href="test4/spring/list">Spring集成测试</a></li>
 	<li></li>
 	<li><a target="_blank" href="test2/upload/list">文件上传测试</a></li>
 	<li><a target="_blank" href="test2/download/list">文件下载测试</a></li>

@@ -1,4 +1,4 @@
-package root.test4.aop;
+package root.test4.spring;
 
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -9,50 +9,92 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 
 import com.jsan.mvc.annotation.Render;
 import com.jsan.mvc.resolve.Resolver;
 import com.jsan.spring.ContextUtils;
-import com.sample.www.bean.Person;
-import com.sample.www.service.PersonService;
+import com.sample.www.dao.FooDao;
+import com.sample.www.service.BarService;
+import com.sample.www.service.FooService;
 
 @Controller
 public class Index {
 
 	@Autowired
-	private PersonService service;
+	@Qualifier("impl.fooServiceImpl")
+	private FooService service;
+
+	@Autowired
+	private BarService bar;
+
+	@Autowired
+	private FooDao fooDao;
+
+	@Autowired
+	private com.sample.www.dao.table.FooDao tableFooDao;
 
 	@Render
 	public void list() {
 
+		System.out.println("=======================================");
+		String[] strs = ContextUtils.getApplicationContext().getBeanDefinitionNames();
+		for (String str : strs) {
+			System.out.println(str);
+		}
+		System.out.println("=======================================");
+
+	}
+
+	@Render(Resolver.HTML)
+	public String one() {
+
+		return service.getData();
+	}
+
+	@Render(Resolver.HTML)
+	public String two() {
+
+		return bar.getData();
+	}
+
+	@Render(Resolver.HTML)
+	public String three() {
+
+		return fooDao.getData();
+	}
+
+	@Render(Resolver.HTML)
+	public String four() {
+
+		return tableFooDao.getData();
 	}
 
 	@Render(Resolver.HTML)
 	public User foo() {
 
-		return ContextUtils.getBean(User.class);
+		return ContextUtils.getBean(User.class.getCanonicalName() + "#0", User.class);
 	}
 
 	@Render(Resolver.HTML)
-	public Person bar() {
+	public User bar() {
 
-		Person person = ContextUtils.getBean(Person.class);
-		service.doSomething(person);
-		return person;
+		return ContextUtils.getBean(User.class.getCanonicalName() + "#1", User.class);
 	}
 
 	@Render(Resolver.HTML)
-	public Person baz() {
+	public User baz() {
 
-		return service.getPerson();
+		System.out.println(ContextUtils.getBean("user2", User.class));
+		return ContextUtils.getBean("user5", User.class);
 	}
 
 	@Render(Resolver.HTML)
 	public User qux() {
 
-		return ContextUtils.getBean(User.class);
+		return ContextUtils.getBean("user", User.class);
 	}
 
 	@Aspect
@@ -89,7 +131,7 @@ public class Index {
 			User obj = null;
 			try {
 				obj = (User) joinPoint.proceed(joinPoint.getArgs());
-				obj.setName("李四");
+				obj.setName("刘九");
 			} catch (Throwable e) {
 				e.printStackTrace();
 			}
@@ -103,7 +145,6 @@ public class Index {
 	public static class User {
 
 		int id;
-		boolean sex;
 		String name;
 
 		public int getId() {
@@ -112,14 +153,6 @@ public class Index {
 
 		public void setId(int id) {
 			this.id = id;
-		}
-
-		public boolean isSex() {
-			return sex;
-		}
-
-		public void setSex(boolean sex) {
-			this.sex = sex;
 		}
 
 		public String getName() {
@@ -132,7 +165,7 @@ public class Index {
 
 		@Override
 		public String toString() {
-			return "User [id=" + id + ", sex=" + sex + ", name=" + name + "]";
+			return "User [id=" + id + ", name=" + name + "]";
 		}
 
 	}
