@@ -19,7 +19,7 @@ public class Run10_RequestLoggingFilter extends AbstractRequestLogging {
 	@Override
 	protected void beforeRequest(HttpServletRequest request) {
 
-		//System.out.println(getDateString() + " [" + getUserId(request) + "] (" + request.getRemoteAddr() + ") " + request.getRequestURI() + getQueryString(request));
+//		System.out.println(getDateString() + " [" + getUserId(request) + "] (" + request.getRemoteAddr() + ") " + request.getRequestURI() + getQueryString(request));
 
 		logger.info("[{}] ({}) {}{}", getUserId(request), request.getRemoteAddr(), request.getRequestURI(),
 				getQueryString(request));
