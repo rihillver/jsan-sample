@@ -8,7 +8,6 @@ import com.jsan.spring.DispatcherFilter;
 
 @WebFilter(
 		initParams = {
-				@WebInitParam(name = "debug", value = "true"), 
 				@WebInitParam(name = "contextPath", value = "/jsan-sample"), 
 				@WebInitParam(name = "executeTime", value = "etime"), 
 				@WebInitParam(name = "viewPath", value = ""), // 此处强烈建议设置

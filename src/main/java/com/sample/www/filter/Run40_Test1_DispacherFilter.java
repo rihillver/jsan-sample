@@ -7,7 +7,6 @@ import com.jsan.mvc.filter.DispatcherFilter;
 
 @WebFilter(
 		initParams = {
-				@WebInitParam(name = "debug", value = "true"), 
 				@WebInitParam(name = "contextPath", value = "/jsan-sample"), 
 				@WebInitParam(name = "executeTime", value = "etime"), 
 				@WebInitParam(name = "mappingSuffix", value = ",.html,.do,.action"),
