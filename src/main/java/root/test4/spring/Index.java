@@ -12,6 +12,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.support.BeanDefinitionBuilder;
+import org.springframework.beans.factory.support.BeanDefinitionRegistry;
+import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.test.context.ContextConfiguration;
@@ -43,6 +46,10 @@ public class Index {
 	@Autowired
 	private com.sample.www.dao.table.FooDao tableFooDao;
 
+	/**
+	 * Spring IOC 容器中的 Bean 列表。
+	 * 
+	 */
 	@Render
 	public void list() {
 
@@ -83,6 +90,47 @@ public class Index {
 	public String four() {
 
 		return tableFooDao.getData();
+	}
+
+	/**
+	 * 将 Bean 动态注册到 Spring IOC 容器。
+	 * 
+	 */
+	@Render(Resolver.HTML)
+	public User five(int id, String name) {
+
+		DefaultListableBeanFactory beanFactory = ContextUtils.getDefaultListableBeanFactory();
+
+		BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition(User.class);
+		builder.addPropertyValue("id", id);
+		builder.addPropertyValue("name", name);
+		builder.setScope("prototype"); // 多例
+		beanFactory.registerBeanDefinition("user9", builder.getRawBeanDefinition());
+
+		return ContextUtils.getBean("user9", User.class);
+	}
+
+	/**
+	 * 动态注册 Bean。
+	 * 
+	 */
+	@Render(Resolver.HTML)
+	public User six(int id, String name) throws ClassNotFoundException {
+
+		BeanDefinitionRegistry registry = ContextUtils.getBeanDefinitionRegistry();
+
+		String className = "root.test4.spring.Index$User";
+		Class<?> clazz = Class.forName(className);
+		BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition(clazz);
+		builder.addPropertyValue("id", id);
+		builder.addPropertyValue("name", name);
+		// builder.setScope("singleton"); // 单例，默认单例
+		registry.registerBeanDefinition("user10", builder.getRawBeanDefinition());
+
+		User user = ContextUtils.getBean("user10", User.class);
+		user.setName("徐十");
+
+		return ContextUtils.getBean("user10", User.class);
 	}
 
 	@Render(Resolver.HTML)
